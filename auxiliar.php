@@ -138,14 +138,14 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
-function comprobar_si_hay_uno(array $params, array &$error): bool
+function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
         if ($p !== "") {
-            return true;
+            return;
         }
     }
-    return false;
+    $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
 
 function conectar_bd(): PDO
