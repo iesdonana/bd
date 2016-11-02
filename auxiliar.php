@@ -167,24 +167,18 @@ function buscar_por_dept_no_y_dnombre(
     string $dept_no,
     string $dnombre
 ): array {
-    if ($dept_no === "") {
-        $orden = $pdo->prepare("select *
-                                  from depart
-                                 where dnombre like :dnombre");
-        $orden->execute([':dnombre' => "%$dnombre%"]);
-    } elseif ($dnombre === "") {
-        $orden = $pdo->prepare("select *
-                                  from depart
-                                 where dept_no = :dept_no");
-        $orden->execute([':dept_no' => $dept_no]);
-    } else {
-        $orden = $pdo->prepare("select *
-                                  from depart
-                                 where dept_no = :dept_no and
-                                       dnombre like :dnombre");
-        $orden->execute([':dept_no' => $dept_no, ':dnombre' => "%$dnombre%"]);
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
     }
-
+    if ($dnombre !== "") {
+        $sql .= " and dnombre like :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
     return $orden->fetchAll();
 }
 
