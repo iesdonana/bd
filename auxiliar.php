@@ -159,11 +159,7 @@ function conectar_bd(): PDO
 
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    $orden = $pdo->prepare("select *
-                              from depart
-                             where dept_no = :dept_no");
-    $orden->execute([':dept_no' => $dept_no]);
-    return $orden->fetchAll();
+    return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
 function buscar_por_dept_no_y_dnombre(
