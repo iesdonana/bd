@@ -131,6 +131,19 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+function comprobar_loc(&$loc, array &$error)
+{
+    if ($loc === null) {
+        throw new Exception;
+    }
+
+    $loc = trim($loc);
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "El nombre de la localidad no puede tener más de 50 caracteres";
+    }
+}
+
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
