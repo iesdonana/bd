@@ -103,10 +103,6 @@ function comprobar_existen($params)
 
 function comprobar_dept_no(&$dept_no, array &$error)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
     $dept_no = trim($dept_no);
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -120,10 +116,6 @@ function comprobar_dept_no(&$dept_no, array &$error)
 
 function comprobar_dnombre(&$dnombre, array &$error)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = trim($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
@@ -133,10 +125,6 @@ function comprobar_dnombre(&$dnombre, array &$error)
 
 function comprobar_loc(&$loc, array &$error)
 {
-    if ($loc === null) {
-        throw new Exception;
-    }
-
     $loc = trim($loc);
 
     if (mb_strlen($loc) > 50) {
@@ -161,6 +149,10 @@ function comprobar_si_hay_uno(array $params, array &$error)
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
 
+/**
+ * Crea una conexión a la base de datos
+ * @return PDO Conexión a la base de datos
+ */
 function conectar_bd(): PDO
 {
     return new PDO(
@@ -170,11 +162,25 @@ function conectar_bd(): PDO
     );
 }
 
+/**
+ * Realiza la busqueda unicamente por dept_no
+ * @param  PDO    $pdo     Conexion a la base de datos
+ * @param  string $dept_no Númerode departamento
+ * @return array           Array con los datos obtenidos de la busqueda
+ */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
+/**
+ * Realiza la busqueda en la base de datos por dept_no, dnombre y loc
+ * @param  PDO    $pdo     Conexion a la base de datos
+ * @param  string $dept_no Número de departamento
+ * @param  string $dnombre Nombre de departamento
+ * @param  string $loc     Localidad del departamento
+ * @return array           Array con los datos obtenidos de la busqueda
+ */
 function buscar_por_dept_no_dnombre_y_loc(
     PDO $pdo,
     string $dept_no,
@@ -200,6 +206,10 @@ function buscar_por_dept_no_dnombre_y_loc(
     return $orden->fetchAll();
 }
 
+/**
+ * Dibuja la tabla con los datos solicitados
+ * @param  array  $result Array con el resultado de la consulta
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
@@ -220,15 +230,21 @@ function dibujar_tabla(array $result)
     </table><?php
 }
 
+/**
+ * Dibuja el formlario de consulta
+ * @param  string $dept_no Número del departamento
+ * @param  string $dnombre Nombre del departamento
+ * @param  string $loc     Localidad del departamento
+ */
 function dibujar_formulario($dept_no,$dnombre,$loc)
 { ?>
     <form action="" method="post">
         <label for="dept_no">Número de departamento:</label>
-        <input type="text" id="dept_no" name="dept_no" value="<?= $dept_no ?>" /><br/>
+        <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" /><br/>
         <label for="dnombre">Nombre de departamento:</label>
-        <input type="text" id="dnombre" name="dnombre" value="<?= $dnombre ?>" /><br/>
+        <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
         <label for="loc">Localidad del departamento:</label>
-        <input type="text" id="loc" name="loc" value="<?= $loc ?>" /><br/>
+        <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
         <input type="submit" value="Buscar" />
     </form><?php
 }
