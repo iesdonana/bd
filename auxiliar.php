@@ -181,7 +181,7 @@ function comprobar_si_vacio(array $result, array &$error)
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
-        if ($p !== "") {
+        if ($p !== null) {
             return;
         }
     }
@@ -233,7 +233,28 @@ function buscar_en_depart(
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_por_dept_no_dnombre_loc(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $loc
+): array {
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
@@ -246,16 +267,17 @@ function buscar_en_depart(
 }
 
 /**
- * Dibuja una tabla con los resultados de la select en la tabla depart
- * @param  array  $result un array con los resultados de la select
+
+ * Dibuja la tabla con el resultado de la consulta
+ * @param  array  $result Matriz de filas x columnas con el resultado
  */
 function dibujar_tabla(array $result)
 { ?>
-    <table border="1">
+    <table class="table">
         <thead>
-            <th>DEPT_NO</th>
-            <th>DNOMBRE</th>
-            <th>LOC</th>
+            <th>Número</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
