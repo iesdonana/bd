@@ -9,11 +9,14 @@
 
         <form action="" method="post">
             <label for="dept_no">Número de departamento:</label>
-            <input type="text" id="dept_no" name="dept_no" /><br/>
+            <input type="text" id="dept_no" name="dept_no"
+                value="<?= htmlentities($_POST['dept_no']) ?>" /><br/>
             <label for="dnombre">Nombre de departamento:</label>
-            <input type="text" id="dnombre" name="dnombre" /><br/>
+            <input type="text" id="dnombre" name="dnombre"
+                value="<?= htmlentities($_POST['dnombre']) ?>" /><br/>
             <label for="loc">Localidad del departamento:</label>
-            <input type="text" id="loc" name="loc" /><br/>
+            <input type="text" id="loc" name="loc"
+                value="<?= htmlentities($_POST['loc']) ?>" /><br/>
             <input type="submit" value="Buscar" />
         </form><?php
 

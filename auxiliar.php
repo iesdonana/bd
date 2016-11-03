@@ -125,6 +125,7 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 
     $dnombre = trim($dnombre);
+    $dnombre = mb_strtoupper($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
@@ -138,6 +139,7 @@ function comprobar_loc(&$loc, array &$error)
     }
 
     $loc = trim($loc);
+    $loc = mb_strtoupper($loc);
 
     if (mb_strlen($loc) > 50) {
         $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
@@ -211,9 +213,9 @@ function dibujar_tabla(array $result)
         <tbody><?php
             foreach ($result as $fila) { ?>
                 <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
+                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= htmlentities($fila['dnombre']) ?></td>
+                    <td><?= htmlentities($fila['loc']) ?></td>
                 </tr><?php
             } ?>
         </tbody>
