@@ -5,22 +5,22 @@
         <title>Bases de datos</title>
     </head>
     <body><?php
-        require 'auxiliar.php'; ?>
-
-        <form action="" method="post">
-            <label for="dept_no">Número de departamento:</label>
-            <input type="text" id="dept_no" name="dept_no" /><br/>
-            <label for="dnombre">Nombre de departamento:</label>
-            <input type="text" id="dnombre" name="dnombre" /><br/>
-            <label for="loc">Localidad:</label>
-            <input type="text" id="loc" name="loc" /><br/>
-            <input type="submit" value="Buscar" />
-        </form><?php
+        require 'auxiliar.php';
 
         try {
             $dept_no = filter_input(INPUT_POST, "dept_no");
             $dnombre = filter_input(INPUT_POST, "dnombre");
-            $loc = filter_input(INPUT_POST, "loc");
+            $loc = filter_input(INPUT_POST, "loc");?>
+
+        <form action="" method="post">
+            <label for="dept_no">Número de departamento:</label>
+            <input type="text" id="dept_no" name="dept_no" value="<?= $dept_no ?>" /><br/>
+            <label for="dnombre">Nombre de departamento:</label>
+            <input type="text" id="dnombre" name="dnombre" value="<?= $dnombre ?>" /><br/>
+            <label for="loc">Localidad:</label>
+            <input type="text" id="loc" name="loc" value="<?= $loc ?>" /><br/>
+            <input type="submit" value="Buscar" />
+        </form><?php
             $error = [];
             comprobar_dept_no($dept_no, $error);
             comprobar_dnombre($dnombre, $error);
