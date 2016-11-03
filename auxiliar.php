@@ -152,8 +152,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'christian',
+        'christian'
     );
 }
 
@@ -174,7 +174,7 @@ function buscar_por_dept_no_y_dnombre(
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
     $orden = $pdo->prepare($sql);
