@@ -140,9 +140,9 @@ function dibujar_tabla(array $result)
 { ?>
     <br/><table border="2 solid collapse">
         <thead>
-            <th style="background-color:aqua">Departamento</th>
-            <th style="background-color:aqua">Nombre</th>
-            <th style="background-color:aqua">Localidad</th>
+            <th style="background-color:lightgrey">Departamento</th>
+            <th style="background-color:lightgrey">Nombre</th>
+            <th style="background-color:lightgrey">Localidad</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
