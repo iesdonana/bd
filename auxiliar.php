@@ -184,8 +184,8 @@ function comprobar_loc(&$loc, array &$error)
 
     $loc = strtoupper(trim($loc));
 
-    if (mb_strlen($loc) > 20) {
-        $error[] = "La localidad del departamento no puede tener más de 20 caracteres";
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
     }
 }
 
