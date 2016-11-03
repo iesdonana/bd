@@ -177,7 +177,7 @@ function saludar(string $nombre, string $telefono)
             $sql .= " and dnombre like :dnombre";
             $params[':dnombre'] = "%$dnombre%";
         }
-        
+
         $orden = $pdo->prepare($sql);
         $orden->execute($params);
         return $orden->fetchAll();
@@ -224,9 +224,9 @@ function saludar(string $nombre, string $telefono)
             <tbody><?php
             foreach ($result as $fila) { ?>
                 <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
+                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= htmlentities($fila['dnombre']) ?></td>
+                    <td><?= htmlentities($fila['loc']) ?></td>
                 </tr><?php
             } ?>
         </tbody>
