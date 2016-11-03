@@ -24,22 +24,24 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Buscador de departamentos</div>
+                        <div class="panel-heading">Consulta de departamentos</div>
                         <div class="panel-body">
                             <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="dept_no">Número de departamento</label>
+                                    <label for="dept_no">Número</label>
                                     <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="dnombre">Nombre de departamento</label>
+                                    <label for="dnombre">Nombre</label>
                                     <input type="text" id="dnombre" name="dnombre"  value="<?= htmlentities($dnombre) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="loc">Localidad del departamento</label>
+                                    <label for="loc">Localidad</label>
                                     <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
                                 </div>
-                                <button type="submit" class="btn btn-default" />Buscar</button>
+                                <button type="submit" class="btn btn-default">Buscar</button>
+                                <button type="reset" class="btn">Limpiar</button>
+                                <a href="insertar.php" class="btn btn-warning" role="button">Insertar</a>
                             </form>
                         </div>
                     </div>
@@ -53,11 +55,7 @@
             comprobar_loc($loc, $error);
             comprobar_errores($error);
             $pdo = conectar_bd();
-<<<<<<< 200ed55191424f2248442361f9b9d060f34e5603
-            $result = buscar_en_depart($pdo, $dept_no, $dnombre, $loc);
-=======
             $result = buscar_por_dept_no_dnombre_loc($pdo, $dept_no, $dnombre, $loc);
->>>>>>> Versión aumentada y basada en Bootstrap
             comprobar_errores($error);
             dibujar_tabla($result);
         } catch (PDOException $e) { ?>
