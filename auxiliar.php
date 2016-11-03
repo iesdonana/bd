@@ -219,3 +219,16 @@ function dibujar_tabla(array $result)
         </tbody>
     </table><?php
 }
+
+function dibujar_formulario($dept_no,$dnombre,$loc)
+{ ?>
+    <form action="" method="post">
+        <label for="dept_no">Número de departamento:</label>
+        <input type="text" id="dept_no" name="dept_no" value="<?= $dept_no ?>" /><br/>
+        <label for="dnombre">Nombre de departamento:</label>
+        <input type="text" id="dnombre" name="dnombre" value="<?= $dnombre ?>" /><br/>
+        <label for="loc">Localidad del departamento:</label>
+        <input type="text" id="loc" name="loc" value="<?= $loc ?>" /><br/>
+        <input type="submit" value="Buscar" />
+    </form><?php
+}
