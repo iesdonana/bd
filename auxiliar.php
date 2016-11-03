@@ -20,87 +20,6 @@ function mostrar_errores($err)
     }
 }
 
-/**
- * Muestra un mensaje de saludo.
- * @param  string $nombre   El nombre de la persona
- * @param  string $telefono El teléfono de la persona
- */
-function saludar(string $nombre, string $telefono)
-{ ?>
-    <h2>Hola, <?= htmlentities($nombre) ?>.
-        Tu teléfono es <?= htmlentities($telefono) ?></h2><?php
-}
-
-function param_falta($param, $humano, &$error)
-{
-    if ($param === null) {
-        $error[] = "Falta el campo $humano";
-        return true;
-    }
-    return false;
-}
-
-function param_longmax($param, $humano, $max, &$error)
-{
-    if (mb_strlen($param) > $max) {
-        $error[] = "El campo $humano no puede superar los $max caracteres";
-        return true;
-    }
-    return false;
-}
-
-function param_vacio($param, $humano, &$error)
-{
-    if ($param === "") {
-        $error[] = "El campo $humano no puede estar vacío";
-        return true;
-    }
-    return false;
-}
-
-function comprobar_nombre($nombre, $humano, &$error)
-{
-    if (param_falta($nombre, $humano, $error) ||
-        param_longmax($nombre, $humano, 50, $error) ||
-        param_vacio($nombre, $humano, $error)) {
-        return;
-    }
-}
-
-function comprobar_telefono($telefono, $humano, &$error)
-{
-    if (param_falta($telefono, $humano, $error) ||
-        param_longmax($telefono, $humano, 9, $error)) {
-        return;
-    }
-
-    if (filter_var($telefono, FILTER_VALIDATE_INT, [
-        'options' => [
-            'min_range' => 100000000,
-            'max_range' => 999999999
-        ]
-    ]) === false) {
-        $error[] = "El campo $humano debe ser un número de 9 dígitos";
-    }
-}
-
-function comprobar_errores($error)
-{
-    if (!empty($error)) {
-        throw new Exception;
-    }
-}
-
-function comprobar_existen($params)
-{
-    foreach ($params as $p) {
-        if ($p !== null) {
-            return true;
-        }
-    }
-    throw new Exception;
-}
-
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     if ($dept_no === null) {
@@ -152,8 +71,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'aaron',
+        'aaron'
     );
 }
 
