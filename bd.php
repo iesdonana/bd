@@ -16,20 +16,22 @@
         </form><?php
 
         try {
-            $dept_no = filter_input(INPUT_POST, "dept_no");
-            $dnombre = filter_input(INPUT_POST, "dnombre");
+            $dept_no = filter_input(INPUT_POST, 'dept_no');
+            $dnombre = filter_input(INPUT_POST, 'dnombre');
             $error = [];
             comprobar_dept_no($dept_no, $error);
             comprobar_dnombre($dnombre, $error);
-            comprobar_si_hay_uno([$dept_no, $dnombre], $error);
+            //comprobar_si_hay_uno([$dept_no, $dnombre], $error);
             comprobar_errores($error);
             $pdo = conectar_bd();
             $result = buscar_por_dept_no_y_dnombre($pdo, $dept_no, $dnombre);
             comprobar_si_vacio($result, $error);
             comprobar_errores($error);
             dibujar_tabla($result);
-        } catch (PDOException $e) { ?>
+        } catch (PDOException $e) {
+            ?>
             <h3>Error de conexión a la base de datos</h3><?php
+
         } catch (Exception $e) {
             mostrar_errores($error);
         } ?>
