@@ -84,6 +84,11 @@ function comprobar_telefono($telefono, $humano, &$error)
     }
 }
 
+/**
+ * Comprueba si el array que se le pasa por parametro no esta vacio
+ * @param  array $error el array de errores
+ * @throws Exception
+ */
 function comprobar_errores($error)
 {
     if (!empty($error)) {
@@ -91,22 +96,28 @@ function comprobar_errores($error)
     }
 }
 
+/**
+ * Comprueba que hay algun elemento del array $params que es distinto de null
+ * @param  array $params array con elementos
+ * @throws Exception
+ */
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
         if ($p !== null) {
-            return true;
+            return;
         }
     }
     throw new Exception;
 }
 
+/**
+ * Comprueba que el numero del departamento este correcto para su buen uso
+ * @param  string $dept_no numero del departamento
+ * @param  array  $error   array de errores
+ */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
     $dept_no = trim($dept_no);
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -118,12 +129,13 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
+/**
+ * Comprueba que el nombre del departamento este correcto para su buen uso
+ * @param  string $dnombre nombre del departamento
+ * @param  array  $error   array de errores
+ */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = trim($dnombre);
     $dnombre = mb_strtoupper($dnombre);
 
@@ -132,12 +144,13 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+/**
+ * Comprueba que la localizacion del departamento este correcta para su buen uso
+ * @param  string $loc   localización del departamento
+ * @param  array  $error array de errores
+ */
 function comprobar_loc(&$loc, array &$error)
 {
-    if ($loc === null) {
-        throw new Exception;
-    }
-
     $loc = trim($loc);
     $loc = mb_strtoupper($loc);
 
@@ -146,6 +159,12 @@ function comprobar_loc(&$loc, array &$error)
     }
 }
 
+/**
+ * Se comprueba si el array que se le pasa esta vacio, si es asi rellena
+ * el array error
+ * @param  array  $result array a comprobar si esta vacio
+ * @param  array  $error  array de errores
+ */
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -153,6 +172,12 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
+/**
+ * Comprueba si al menos uno de los parametros de $params es distinto de cadena
+ * vacia, si no es asi añade un error al array $error
+ * @param  array  $params array a comprobar
+ * @param  array  $error  array de errores
+ */
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
@@ -163,6 +188,10 @@ function comprobar_si_hay_uno(array $params, array &$error)
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
 
+/**
+ * Conecta con la base de datos
+ * @return PDO devuelve un objeto PDO
+ */
 function conectar_bd(): PDO
 {
     return new PDO(
@@ -172,11 +201,25 @@ function conectar_bd(): PDO
     );
 }
 
+/**
+ * Busca en la tabla depart solo por dept_no
+ * @param  PDO    $pdo     el objeto PDO con la conexion a la base de datos
+ * @param  string $dept_no el numero de departamento a buscar
+ * @return array           devuelve el array con los resultados
+ */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
     return buscar_en_depart($pdo, $dept_no, "", "");
 }
 
+/**
+ * Busca en la tabla depart por sus tres campos (dept_no, dnombre y loc)
+ * @param  PDO    $pdo     el objeto PDO con la conexion a la base de datos
+ * @param  string $dept_no el numero de departamento a buscar
+ * @param  string $dnombre el nombre del departamento a buscar
+ * @param  string $loc     la localización del departamento a buscar
+ * @return array           devuelve el array con los resultados
+ */
 function buscar_en_depart(
     PDO $pdo,
     string $dept_no,
@@ -194,14 +237,18 @@ function buscar_en_depart(
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
-        $sql .= " and loc = :loc";
-        $params[':loc'] = "$loc";
+        $sql .= " and loc like :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
     return $orden->fetchAll();
 }
 
+/**
+ * Dibuja una tabla con los resultados de la select en la tabla depart
+ * @param  array  $result un array con los resultados de la select
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
