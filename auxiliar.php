@@ -21,69 +21,9 @@ function mostrar_errores($err)
 }
 
 /**
- * Muestra un mensaje de saludo.
- * @param  string $nombre   El nombre de la persona
- * @param  string $telefono El teléfono de la persona
+ * Comprueba si hay errores
+ * @param  array $error El array que contiene los errores
  */
-function saludar(string $nombre, string $telefono)
-{ ?>
-    <h2>Hola, <?= htmlentities($nombre) ?>.
-        Tu teléfono es <?= htmlentities($telefono) ?></h2><?php
-}
-
-function param_falta($param, $humano, &$error)
-{
-    if ($param === null) {
-        $error[] = "Falta el campo $humano";
-        return true;
-    }
-    return false;
-}
-
-function param_longmax($param, $humano, $max, &$error)
-{
-    if (mb_strlen($param) > $max) {
-        $error[] = "El campo $humano no puede superar los $max caracteres";
-        return true;
-    }
-    return false;
-}
-
-function param_vacio($param, $humano, &$error)
-{
-    if ($param === "") {
-        $error[] = "El campo $humano no puede estar vacío";
-        return true;
-    }
-    return false;
-}
-
-function comprobar_nombre($nombre, $humano, &$error)
-{
-    if (param_falta($nombre, $humano, $error) ||
-        param_longmax($nombre, $humano, 50, $error) ||
-        param_vacio($nombre, $humano, $error)) {
-        return;
-    }
-}
-
-function comprobar_telefono($telefono, $humano, &$error)
-{
-    if (param_falta($telefono, $humano, $error) ||
-        param_longmax($telefono, $humano, 9, $error)) {
-        return;
-    }
-
-    if (filter_var($telefono, FILTER_VALIDATE_INT, [
-        'options' => [
-            'min_range' => 100000000,
-            'max_range' => 999999999
-        ]
-    ]) === false) {
-        $error[] = "El campo $humano debe ser un número de 9 dígitos";
-    }
-}
-
 function comprobar_errores($error)
 {
     if (!empty($error)) {
@@ -91,16 +31,11 @@ function comprobar_errores($error)
     }
 }
 
-function comprobar_existen($params)
-{
-    foreach ($params as $p) {
-        if ($p !== null) {
-            return true;
-        }
-    }
-    throw new Exception;
-}
-
+/**
+ * Comprueba que los datos del número de departamento son correctos
+ * @param  string $dept_no El numero del departamento
+ * @param  array  $error   El array que contiene los errores
+ */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     if ($dept_no === null) {
@@ -118,6 +53,11 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
+/**
+ * Comprueba que los datos del nombre de departamento son correctos
+ * @param  string $dnombre El nombre del departamento
+ * @param  array  $error   El array que contiene los errores
+ */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
     if ($dnombre === null) {
@@ -131,6 +71,11 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+/**
+ * Comprueba que los datos de la localidad de departamento son correctos
+ * @param  string $loc     La localidad del departamento
+ * @param  array  $error   El array que contiene los errores
+ */
 function comprobar_loc(&$loc, array &$error)
 {
     if ($loc === null) {
@@ -144,6 +89,11 @@ function comprobar_loc(&$loc, array &$error)
     }
 }
 
+/**
+ * Comprueba si existe el departamento
+ * @param  array  $result El array de los resultados de la búsqueda
+ * @param  array  $error  El array que contiene los errores
+ */
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -151,6 +101,10 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
+/**
+ * Conecta con la base de datos
+ * @return PDO La conexión con la base de datos
+ */
 function conectar_bd(): PDO
 {
     return new PDO(
@@ -160,11 +114,14 @@ function conectar_bd(): PDO
     );
 }
 
-function buscar_por_dept_no(PDO $pdo, string $dept_no): array
-{
-    return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
-}
-
+/**
+ * Realiza la busqueda en la base de datos con los datos recibidos
+ * @param  PDO    $pdo     La conexión con la base de datos
+ * @param  string $dept_no El número del departamento
+ * @param  string $dnombre El nombre del departamento
+ * @param  string $loc     La localidad del departamento
+ * @return array           El array con los datos encontrados en la búsqueda
+ */
 function buscar_por_dept_no_dnombre_y_loc(
     PDO $pdo,
     string $dept_no,
@@ -190,13 +147,17 @@ function buscar_por_dept_no_dnombre_y_loc(
     return $orden->fetchAll();
 }
 
+/**
+ * Muestra por pantalla el resultado de la tabla
+ * @param  array  $result El array de los resultados de la búsqueda
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
         <thead>
-            <th>DEPT_NO</th>
-            <th>DNOMBRE</th>
-            <th>LOC</th>
+            <th>Número</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
