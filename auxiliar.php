@@ -90,7 +90,11 @@ function comprobar_errores($error)
         throw new Exception;
     }
 }
-
+/**
+ * Comprueba si estan los valores
+ * @param  [array] $params [almacena valores]
+ * @return devuelve true si existe un valor nulo
+ */
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
@@ -100,7 +104,11 @@ function comprobar_existen($params)
     }
     throw new Exception;
 }
-
+/**
+ * Comprueba el número del departamento
+ * @param  [string] $dept_no [número de departamento]
+ * @param  array  $error  [almacena errores]
+ */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     if ($dept_no === null) {
@@ -108,6 +116,7 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 
     $dept_no = trim($dept_no);
+
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -117,7 +126,11 @@ function comprobar_dept_no(&$dept_no, array &$error)
         $error[] = "El número de departamento debe contener 1 ó 2 dígitos";
     }
 }
-
+/**
+ * Comprueba y trata el nombre del departamento
+ * @param  [string] $dnombre [nombre del departamento]
+ * @param  array  $error   [almacena errores]
+ */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
     if ($dnombre === null) {
@@ -125,11 +138,35 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 
     $dnombre = trim($dnombre);
+    $dnombre = mb_strtoupper($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
     }
 }
+
+
+
+/**
+ * [comprobar_loc comprueba y trara características de la función]
+ * @param  [string] $loc   [localidad del departamento]
+ * @param  array  $error [almacena errores]
+ */
+function comprobar_loc(&$loc, array &$error)
+{
+    if ($loc === null) {
+        throw new Exception;
+    }
+
+    $loc = trim($loc);
+    $loc = mb_strtoupper($loc);
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad debe de tener menos de 50 caracteres";
+    }
+
+}
+
 
 function comprobar_si_vacio(array $result, array &$error)
 {
@@ -147,7 +184,10 @@ function comprobar_si_hay_uno(array $params, array &$error)
     }
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
-
+/**
+ * Conecta con la base de datos
+ * @return PDO [description]
+ */
 function conectar_bd(): PDO
 {
     return new PDO(
@@ -162,6 +202,12 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
+/**
+ * @param  PDO    $pdo     [objeto de la clase pdo]
+ * @param  string $dept_no [número del departamento]
+ * @param  string $dnombre [nombre del departamento]
+ * @return array           [devuelve un array con los resultados de la consulta]
+ */
 function buscar_por_dept_no_y_dnombre(
     PDO $pdo,
     string $dept_no,
@@ -177,11 +223,20 @@ function buscar_por_dept_no_y_dnombre(
         $sql .= " and dnombre like :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
+
+    if ($loc !== "") {
+        $sql .= " and loc like :loc";
+        $params[':loc'] = "%$loc%";
+    }
+
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
     return $orden->fetchAll();
 }
-
+/**
+ * muestra la tabla por pantalla
+ * @param  array  $result [almacena los resultados de la consulta]
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
@@ -193,9 +248,9 @@ function dibujar_tabla(array $result)
         <tbody><?php
             foreach ($result as $fila) { ?>
                 <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
+                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= htmlentities($fila['dnombre']) ?></td>
+                    <td><?= htmlentities($fila['loc']) ?></td>
                 </tr><?php
             } ?>
         </tbody>
