@@ -20,6 +20,23 @@ function mostrar_errores($err)
     }
 }
 
+function comprobar_errores($error)
+{
+    if (!empty($error)) {
+        throw new Exception;
+    }
+}
+
+function comprobar_existen($params)
+{
+    foreach ($params as $p) {
+        if ($p !== null) {
+            return true;
+        }
+    }
+    throw new Exception;
+}
+
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     if ($dept_no === null) {
