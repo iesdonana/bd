@@ -261,6 +261,27 @@ function buscar_en_depart(
         $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_por_dept_no_dnombre_loc(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $loc
+): array {
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre ilike :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
     if ($loc !== "") {
         $sql .= " and loc like :loc";
         $params[':loc'] = "%$loc%";
@@ -296,8 +317,9 @@ function buscar_por_dept_no_dnombre_loc(
 }
 
 /**
- * Dibuja una tabla con los resultados de la select en la tabla depart
- * @param  array  $result un array con los resultados de la select
+
+ * Dibuja la tabla con el resultado de la consulta
+ * @param  array  $result Matriz de filas x columnas con el resultado
  */
 function dibujar_tabla(array $result)
 { ?>
