@@ -291,31 +291,6 @@ function buscar_por_dept_no_dnombre_loc(
     return $orden->fetchAll();
 }
 
-function buscar_por_dept_no_dnombre_loc(
-    PDO $pdo,
-    string $dept_no,
-    string $dnombre,
-    string $loc
-): array {
-    $sql = "select * from depart where true";
-    $params = [];
-    if ($dept_no !== "") {
-        $sql .= " and dept_no = :dept_no";
-        $params[':dept_no'] = $dept_no;
-    }
-    if ($dnombre !== "") {
-        $sql .= " and dnombre ilike :dnombre";
-        $params[':dnombre'] = "%$dnombre%";
-    }
-    if ($loc !== "") {
-        $sql .= " and loc ilike :loc";
-        $params[':loc'] = "%$loc%";
-    }
-    $orden = $pdo->prepare($sql);
-    $orden->execute($params);
-    return $orden->fetchAll();
-}
-
 /**
 
  * Dibuja la tabla con el resultado de la consulta
