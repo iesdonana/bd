@@ -5,3 +5,9 @@ create table depart (
     dnombre varchar(20) not null,
     loc     varchar(50)
 );
+
+insert into depart
+    values (10, 'CONTABILIDAD','SANLUCAR'),
+           (20, 'INVESTIGACION','JEREZ'),
+           (30, 'VENTAS','TREBUJENA'),
+           (40, 'PRODUCCION','CHIPIONA');
