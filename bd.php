@@ -14,11 +14,11 @@
 
         <form action="" method="post">
             <label for="dept_no">Número de departamento:</label>
-            <input type="text" id="dept_no" name="dept_no" value="<?= $dept_no ?>" /><br/>
+            <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" /><br/>
             <label for="dnombre">Nombre de departamento:</label>
-            <input type="text" id="dnombre" name="dnombre" value="<?= $dnombre ?>" /><br/>
+            <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
             <label for="loc">Localidad:</label>
-            <input type="text" id="loc" name="loc" value="<?= $loc ?>" /><br/>
+            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
             <input type="submit" value="Buscar" />
         </form><?php
             $error = [];
