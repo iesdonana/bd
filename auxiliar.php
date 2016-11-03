@@ -161,26 +161,21 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 }
 
 /**
- * Comprueba que la localizacion del departamento este correcta para su buen uso
- * @param  string $loc   localización del departamento
- * @param  array  $error array de errores
+ * Se comprueba si el array que se le pasa esta vacio, si es asi rellena
+ * el array error
+ * @param  array  $result array a comprobar si esta vacio
+ * @param  array  $error  array de errores
  */
 function comprobar_loc(&$loc, array &$error)
 {
     $loc = trim($loc);
     $loc = mb_strtoupper($loc);
 
-    if (mb_strlen($loc) > 50) {
-        $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
+    if (mb_strlen($loc) > 20) {
+        $error[] = "La localidad del departamento no puede tener más de 20 caracteres";
     }
 }
 
-/**
- * Se comprueba si el array que se le pasa esta vacio, si es asi rellena
- * el array error
- * @param  array  $result array a comprobar si esta vacio
- * @param  array  $error  array de errores
- */
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -283,8 +278,8 @@ function buscar_por_dept_no_dnombre_loc(
 }
 
 /**
- * Dibuja una tabla con los resultados de la select en la tabla depart
- * @param  array  $result un array con los resultados de la select
+ * Dibuja la tabla con el resultado de la consulta
+ * @param  array  $result Matriz de filas x columnas con el resultado
  */
 function dibujar_tabla(array $result)
 { ?>
