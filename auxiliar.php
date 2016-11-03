@@ -142,6 +142,19 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+function comprobar_localidad(&$localidad, array &$error)
+{
+    if ($localidad === null) {
+        throw new Exception();
+    }
+
+    $localidad = trim($localidad);
+
+    if (mb_strlen($localidad) > 50) {
+        $error[] = 'El nombre de la localidad no puede tener más de 50 caracteres';
+    }
+}
+
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
@@ -182,6 +195,32 @@ function buscar_por_dept_no_y_dnombre(
     if ($dnombre !== '') {
         $sql .= ' and dnombre like :dnombre';
         $params[':dnombre'] = "%$dnombre%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+
+    return $orden->fetchAll();
+}
+
+function buscar_por_dept_no_y_dnombre_y_localidad(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $localidad
+): array {
+    $sql = 'select * from depart where true';
+    $params = [];
+    if ($dept_no !== '') {
+        $sql .= ' and dept_no = :dept_no';
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== '') {
+        $sql .= ' and dnombre like :dnombre';
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($localidad !== '') {
+        $sql .= ' and loc like :loc';
+        $params[':loc'] = "%$localidad%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
