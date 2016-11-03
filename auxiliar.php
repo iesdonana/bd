@@ -274,8 +274,8 @@ function buscar_por_dept_no_dnombre_loc(
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
-        $sql .= " and loc like :loc";
-        $params[':loc'] = "%$loc%";
+        $sql .= " and loc = :loc";
+        $params[':loc'] = "$loc";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
