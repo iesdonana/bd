@@ -9,6 +9,131 @@ function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
 }
 set_error_handler("exception_error_handler");
 
+
+/******************************************************************************/
+
+function comprobar_dept_no(&$dept_no, array &$error)
+{
+    if ($dept_no === null) {
+        throw new Exception;
+    }
+
+    $dept_no = trim($dept_no);
+
+    if ($dept_no !== "" && !ctype_digit($dept_no)) {
+        $error[] = "El número de departamento debe ser un número";
+    }
+
+    if (mb_strlen($dept_no) > 2) {
+        $error[] = "El número de departamento debe contener 1 ó 2 dígitos";
+    }
+}
+
+function comprobar_dnombre(&$dnombre, array &$error)
+{
+    if ($dnombre === null) {
+        throw new Exception;
+    }
+
+    $dnombre = trim($dnombre);
+
+    if (mb_strlen($dnombre) > 20) {
+        $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
+    }
+}
+
+function comprobar_loc(&$loc, array &$error)
+{
+    if ($loc === null) {
+        throw new Exception;
+    }
+    $loc = trim($loc);
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "El nombre del departamento no puede tener más de 50 caracteres";
+    }
+}
+
+function comprobar_si_hay_uno(array $params, array &$error)
+{
+    foreach ($params as $p) {
+        if ($p !== "") {
+            return;
+        }
+    }
+    $error[] = "Debe indicar al menos un criterio de búsqueda";
+}
+
+function comprobar_errores($error)
+{
+    if (!empty($error)) {
+        throw new Exception;
+    }
+}
+
+function conectar_bd(): PDO
+{
+    return new PDO(
+        'pgsql:host=localhost;dbname=prueba',
+        'jesus',
+        'jesus'
+    );
+}
+
+function buscar_por_dept_no_y_dnombre_y_loc(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $loc
+): array {
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre like :dnombre";
+        $params[':dnombre'] = strtoupper("%$dnombre%");
+    }
+    if ($loc !== "") {
+        $sql .= " and loc like :loc";
+        $params['loc'] = strtoupper("%$loc%");
+    }
+
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function comprobar_si_vacio(array $result, array &$error)
+{
+    if (empty($result)) {
+        $error[] = "No existe ese departamento";
+    }
+}
+
+function dibujar_tabla(array $result)
+{ ?>
+    <table border="1">
+        <thead>
+            <th>DEPT_NO</th>
+            <th>DNOMBRE</th>
+            <th>LOC</th>
+        </thead>
+        <tbody><?php
+            foreach ($result as $fila) { ?>
+                <tr>
+                    <td><?= htmlentities($fila['dept_no']); ?></td>
+                    <td><?= htmlentities($fila['dnombre']); ?></td>
+                    <td><?= htmlentities($fila['loc']); ?></td>
+                </tr><?php
+            } ?>
+        </tbody>
+    </table><?php
+}
+
+
 /**
  * Muestra por la salida los errores del argumento.
  * @param  array $err El array que contiene los errores
@@ -84,13 +209,6 @@ function comprobar_telefono($telefono, $humano, &$error)
     }
 }
 
-function comprobar_errores($error)
-{
-    if (!empty($error)) {
-        throw new Exception;
-    }
-}
-
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
@@ -101,103 +219,7 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
-function comprobar_dept_no(&$dept_no, array &$error)
-{
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
-    $dept_no = trim($dept_no);
-
-    if ($dept_no !== "" && !ctype_digit($dept_no)) {
-        $error[] = "El número de departamento debe ser un número";
-    }
-
-    if (mb_strlen($dept_no) > 2) {
-        $error[] = "El número de departamento debe contener 1 ó 2 dígitos";
-    }
-}
-
-function comprobar_dnombre(&$dnombre, array &$error)
-{
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
-    $dnombre = trim($dnombre);
-
-    if (mb_strlen($dnombre) > 20) {
-        $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
-    }
-}
-
-function comprobar_si_vacio(array $result, array &$error)
-{
-    if (empty($result)) {
-        $error[] = "No existe ese departamento";
-    }
-}
-
-function comprobar_si_hay_uno(array $params, array &$error)
-{
-    foreach ($params as $p) {
-        if ($p !== "") {
-            return;
-        }
-    }
-    $error[] = "Debe indicar al menos un criterio de búsqueda";
-}
-
-function conectar_bd(): PDO
-{
-    return new PDO(
-        'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
-    );
-}
-
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
-}
-
-function buscar_por_dept_no_y_dnombre(
-    PDO $pdo,
-    string $dept_no,
-    string $dnombre
-): array {
-    $sql = "select * from depart where true";
-    $params = [];
-    if ($dept_no !== "") {
-        $sql .= " and dept_no = :dept_no";
-        $params[':dept_no'] = $dept_no;
-    }
-    if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
-        $params[':dnombre'] = "%$dnombre%";
-    }
-    $orden = $pdo->prepare($sql);
-    $orden->execute($params);
-    return $orden->fetchAll();
-}
-
-function dibujar_tabla(array $result)
-{ ?>
-    <table border="1">
-        <thead>
-            <th>DEPT_NO</th>
-            <th>DNOMBRE</th>
-            <th>LOC</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) { ?>
-                <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
 }
