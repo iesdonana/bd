@@ -29,6 +29,7 @@ try {
     $error = [];
     comprobar_dept_no($dept_no, $error);
     comprobar_dnombre($dnombre, $error);
+    comprobar_loc($loc, $error);
     //comprobar_si_hay_uno([$dept_no, $dnombre], $error);
     comprobar_errores($error);
     $pdo = conectar_bd();

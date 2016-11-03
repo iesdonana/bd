@@ -118,6 +118,19 @@ function saludar(string $nombre, string $telefono)
             }
         }
 
+        function comprobar_loc(&$loc, array &$error)
+        {
+            if ($loc === null) {
+                throw new Exception;
+            }
+
+            $loc = trim($loc);
+
+            if (mb_strlen($loc) > 20) {
+                $error[] = "la localidad del departamento no puede tener más de 50 caracteres";
+            }
+        }
+
         function comprobar_dnombre(&$dnombre, array &$error)
         {
             if ($dnombre === null) {
