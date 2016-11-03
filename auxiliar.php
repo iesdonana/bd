@@ -103,10 +103,6 @@ function comprobar_existen($params)
 
 function comprobar_dept_no(&$dept_no, array &$error)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
     $dept_no = trim($dept_no);
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -120,10 +116,6 @@ function comprobar_dept_no(&$dept_no, array &$error)
 
 function comprobar_dnombre(&$dnombre, array &$error)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = trim($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
@@ -133,10 +125,6 @@ function comprobar_dnombre(&$dnombre, array &$error)
 
 function comprobar_loc(&$loc, array &$error)
 {
-    if ($loc === null) {
-        throw new Exception;
-    }
-
     $loc = trim($loc);
 
     if (mb_strlen($loc) > 50) {
