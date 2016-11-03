@@ -147,9 +147,9 @@ function dibujar_tabla(array $result)
         <tbody><?php
             foreach ($result as $fila) { ?>
                 <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
+                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= htmlentities($fila['dnombre']) ?></td>
+                    <td><?= htmlentities($fila['loc']) ?></td>
                 </tr><?php
             } ?>
         </tbody>
