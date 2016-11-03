@@ -138,22 +138,12 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
-function comprobar_si_hay_uno(array $params, array &$error)
-{
-    foreach ($params as $p) {
-        if ($p !== "") {
-            return;
-        }
-    }
-    $error[] = "Debe indicar al menos un criterio de búsqueda";
-}
-
 function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'joseluis',
+        'joseluis'
     );
 }
 
