@@ -101,6 +101,11 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
+/**
+ * Comprueba si el dept_no es valido
+ * @param  string $dept_no Número de departamento
+ * @param  array  $error   Array de errores
+ */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     $dept_no = trim($dept_no);
@@ -114,6 +119,11 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
+/**
+ * Comprueba si el dnombre es valido
+ * @param  string $dnombre Nombre del departamento
+ * @param  array  $error   Array de errores
+ */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
     $dnombre = trim($dnombre);
@@ -123,6 +133,11 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+/**
+ * Comprueba si el loc es valido
+ * @param  string $loc   Localidad del departamento
+ * @param  array  $error Array de errores
+ */
 function comprobar_loc(&$loc, array &$error)
 {
     $loc = trim($loc);
@@ -132,6 +147,12 @@ function comprobar_loc(&$loc, array &$error)
     }
 }
 
+/**
+ * Comprueba si alguno de los elementos del array de resultados de la busqueda
+ * esta vacio
+ * @param  array  $result Array de resultados de la busqueda
+ * @param  array  $error  Array de errores
+ */
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -139,6 +160,11 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
+/**
+ * Comprueba si alguno de los elementos del array existe
+ * @param  array  $params Array con los elementos a buscar
+ * @param  array  $error  Array de errores
+ */
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
