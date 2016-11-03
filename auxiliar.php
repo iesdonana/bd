@@ -138,11 +138,11 @@ function buscar_por_dept_no_y_dnombre(
 
 function dibujar_tabla(array $result)
 { ?>
-    <table border="1">
+    <br/><table border="2 solid collapse">
         <thead>
-            <th>Departamento</th>
-            <th>NOMBRE</th>
-            <th>Localidad</th>
+            <th style="background-color:aqua">Departamento</th>
+            <th style="background-color:aqua">Nombre</th>
+            <th style="background-color:aqua">Localidad</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
