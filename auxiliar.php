@@ -84,13 +84,22 @@ function comprobar_telefono($telefono, $humano, &$error)
     }
 }
 
-function comprobar_errores($error)
+/**
+ * Comprueba si el array de errores está vacío (no contiene ningún error).
+ * @param  array $error Array con los errores.
+ */
+function comprobar_errores(array $error)
 {
     if (!empty($error)) {
         throw new Exception;
     }
 }
 
+/**
+ * Comprueba si hay algun valor en el array, que sea distinto de null.
+ * @param  array $params  Array con los distintos valores que queremos comprobar
+ * @return bool           true si hay alguno distinto de null.
+ */
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
@@ -101,6 +110,11 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
+/**
+ * Comprueba que el número de departamento contenga valores válidos.
+ * @param  string $dept_no  Número de departamento.
+ * @param  array  $error    Array con los errores.
+ */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
     if ($dept_no === null) {
@@ -118,6 +132,11 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
+/**
+ * Comprueba que el nombre de departamento contenga valores válidos.
+ * @param  string $dnombre  Nombre de departamento.
+ * @param  array  $error    Array con los errores.
+ */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
     if ($dnombre === null) {
@@ -131,6 +150,11 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+/**
+ * Comprueba que la localidad contenga valores válidos.
+ * @param  string $loc      Localidad.
+ * @param  array  $error    Array con los errores.
+ */
 function comprobar_loc(&$loc, array &$error)
 {
     if ($loc === null) {
@@ -144,6 +168,12 @@ function comprobar_loc(&$loc, array &$error)
     }
 }
 
+/**
+ * Comprueba si el array que contiene las filas resultantes de la consulta,
+ * está vacío
+ * @param  array  $result  Array con las filas resultantes de la consulta.
+ * @param  array  $error   Array con los errores.
+ */
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -161,6 +191,10 @@ function comprobar_si_hay_uno(array $params, array &$error)
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
 
+/**
+ * Conecta con la base de datos
+ * @return PDO  Objeto con la conexión.
+ */
 function conectar_bd(): PDO
 {
     return new PDO(
@@ -170,11 +204,25 @@ function conectar_bd(): PDO
     );
 }
 
+/**
+ * Realiza una búsqueda por dept_no, y devuelve un array con el resultado.
+ * @param  PDO    $pdo      Objeto con la conexión.
+ * @param  string $dept_no  Número de departamento.
+ * @return array            Array con el resultado de la consulta.
+ */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
+/**
+ * Realiza una búsqueda por dept_no, dnombre y loc (Cualquiera de ellos)
+ * @param  PDO    $pdo      Objeto con la conexión.
+ * @param  string $dept_no  Número de departamento.
+ * @param  string $dnombre  Nombre de departamento.
+ * @param  string $loc      Localidad.
+ * @return array            Array con el resultado de la consulta.
+ */
 function buscar_por_dept_no_y_dnombre_y_loc(
     PDO $pdo,
     string $dept_no,
@@ -200,6 +248,10 @@ function buscar_por_dept_no_y_dnombre_y_loc(
     return $orden->fetchAll();
 }
 
+/**
+ * Dibuja la tabla con los resultados de una consulta, pasados por parámetro
+ * @param  array  $result  Array con el resultado de la consulta.
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
