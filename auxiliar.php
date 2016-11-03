@@ -152,8 +152,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'ezekie',
+        'ezekie'
     );
 }
 
