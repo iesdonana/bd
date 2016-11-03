@@ -103,10 +103,6 @@ function saludar(string $nombre, string $telefono)
 
         function comprobar_dept_no(&$dept_no, array &$error)
         {
-            if ($dept_no === null) {
-                throw new Exception;
-            }
-
             $dept_no = trim($dept_no);
 
             if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -120,10 +116,6 @@ function saludar(string $nombre, string $telefono)
 
         function comprobar_loc(&$loc, array &$error)
         {
-            if ($loc === null) {
-                throw new Exception;
-            }
-
             $loc = trim($loc);
 
             if (mb_strlen($loc) > 20) {
@@ -133,10 +125,6 @@ function saludar(string $nombre, string $telefono)
 
         function comprobar_dnombre(&$dnombre, array &$error)
         {
-            if ($dnombre === null) {
-                throw new Exception;
-            }
-
             $dnombre = trim($dnombre);
 
             if (mb_strlen($dnombre) > 20) {
@@ -210,11 +198,11 @@ function saludar(string $nombre, string $telefono)
             $params[':dept_no'] = $dept_no;
         }
         if ($dnombre !== "") {
-            $sql .= " and dnombre like :dnombre";
+            $sql .= " and dnombre ilike :dnombre";
             $params[':dnombre'] = "%$dnombre%";
         }
         if ($loc !== "") {
-            $sql .= " and loc like :loc";
+            $sql .= " and loc ilike :loc";
             $params[':loc'] = "%$loc%";
         }
         if($dnombre === "" && $dept_no ==="" && $loc === ""){
