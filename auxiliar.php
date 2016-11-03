@@ -131,6 +131,19 @@ function comprobar_dnombre(&$dnombre, array &$error)
     }
 }
 
+function comprobar_loc(&$loc, array &$error)
+{
+    if ($loc === null) {
+        throw new Exception;
+    }
+
+    $loc = trim($loc);
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad del departamento no puede tener mas de 50 caracteres";
+    }
+}
+
 function comprobar_si_vacio(array $result, array &$error)
 {
     if (empty($result)) {
@@ -162,10 +175,11 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
-function buscar_por_dept_no_y_dnombre(
+function buscar_por_dept_no_dnombre_y_loc(
     PDO $pdo,
     string $dept_no,
-    string $dnombre
+    string $dnombre,
+    string $loc
 ): array {
     $sql = "select * from depart where true";
     $params = [];
@@ -176,6 +190,10 @@ function buscar_por_dept_no_y_dnombre(
     if ($dnombre !== "") {
         $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($loc !== "") {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
