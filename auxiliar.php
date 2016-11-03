@@ -124,10 +124,23 @@ function comprobar_dnombre(&$dnombre, array &$error)
         throw new Exception;
     }
 
-    $dnombre = trim($dnombre);
+    $dnombre = mb_strtoupper(trim($dnombre));
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
+    }
+}
+
+function comprobar_loc(&$loc, array &$error)
+{
+    if ($loc === null) {
+        throw new Exception;
+    }
+
+    $loc = mb_strtoupper(trim($loc));
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
     }
 }
 
@@ -152,8 +165,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'alumno',
+        '4904321weB'
     );
 }
 
@@ -176,6 +189,30 @@ function buscar_por_dept_no_y_dnombre(
     if ($dnombre !== "") {
         $sql .= " and dnombre like :dnombre";
         $params[':dnombre'] = "%$dnombre%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_en_depart(PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $loc): array
+{
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre like :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($loc !== "") {
+        $sql .= " and loc like :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
