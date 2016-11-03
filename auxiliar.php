@@ -177,9 +177,7 @@ function saludar(string $nombre, string $telefono)
             $sql .= " and dnombre like :dnombre";
             $params[':dnombre'] = "%$dnombre%";
         }
-        if($dnombre === "" && $dept_no ==="" ){
-            $sql = "select * from depart";
-        }
+        
         $orden = $pdo->prepare($sql);
         $orden->execute($params);
         return $orden->fetchAll();
