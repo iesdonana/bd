@@ -188,11 +188,11 @@ function buscar_por_dept_no_y_dnombre_y_loc(
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
-        $sql .= " and loc like :loc";
+        $sql .= " and loc ilike :loc";
         $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
