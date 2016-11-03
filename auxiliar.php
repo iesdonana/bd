@@ -177,6 +177,7 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
  */
 function comprobar_loc(&$loc, array &$error)
 {
+
     $loc = strtoupper(trim($loc));
 
     if (mb_strlen($loc) > 50) {
@@ -260,6 +261,10 @@ function buscar_en_depart(
     if ($dnombre !== "") {
         $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($loc !== "") {
+        $sql .= " and loc = :loc";
+        $params[':loc'] = "$loc";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
