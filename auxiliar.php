@@ -162,10 +162,11 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
-function buscar_por_dept_no_y_dnombre(
+function buscar_por_dept_no_y_dnombre_y_loc(
     PDO $pdo,
     string $dept_no,
-    string $dnombre
+    string $dnombre,
+    string $loc
 ): array {
     $sql = "select * from depart where true";
     $params = [];
@@ -174,8 +175,12 @@ function buscar_por_dept_no_y_dnombre(
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($loc !== "") {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
