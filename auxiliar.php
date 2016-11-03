@@ -274,8 +274,8 @@ function buscar_por_dept_no_dnombre_loc(
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
-        $sql .= " and loc = :loc";
-        $params[':loc'] = "$loc";
+        $sql .= " and loc like :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
@@ -283,9 +283,8 @@ function buscar_por_dept_no_dnombre_loc(
 }
 
 /**
-
- * Dibuja la tabla con el resultado de la consulta
- * @param  array  $result Matriz de filas x columnas con el resultado
+ * Dibuja una tabla con los resultados de la select en la tabla depart
+ * @param  array  $result un array con los resultados de la select
  */
 function dibujar_tabla(array $result)
 { ?>
