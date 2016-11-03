@@ -103,10 +103,6 @@ function comprobar_existen($params)
 
 function comprobar_dept_no(&$dept_no, array &$error)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
     $dept_no = trim($dept_no);
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -120,14 +116,19 @@ function comprobar_dept_no(&$dept_no, array &$error)
 
 function comprobar_dnombre(&$dnombre, array &$error)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = trim($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
+    }
+}
+
+function comprobar_loc(&$loc, array &$error)
+{
+    $loc = trim($loc);
+
+    if (mb_strlen($loc) > 20) {
+        $error[] = "La localidad del departamento no puede tener más de 20 caracteres";
     }
 }
 
@@ -141,7 +142,7 @@ function comprobar_si_vacio(array $result, array &$error)
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
-        if ($p !== "") {
+        if ($p !== null) {
             return;
         }
     }
@@ -174,7 +175,7 @@ function buscar_por_dept_no_y_dnombre(
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
     $orden = $pdo->prepare($sql);
@@ -182,20 +183,49 @@ function buscar_por_dept_no_y_dnombre(
     return $orden->fetchAll();
 }
 
+function buscar_por_dept_no_dnombre_loc(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $loc
+): array {
+    $sql = "select * from depart where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre ilike :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($loc !== "") {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+/**
+ * Dibuja la tabla con el resultado de la consulta
+ * @param  array  $result Matriz de filas x columnas con el resultado
+ */
 function dibujar_tabla(array $result)
 { ?>
-    <table border="1">
+    <table class="table">
         <thead>
-            <th>DEPT_NO</th>
-            <th>DNOMBRE</th>
-            <th>LOC</th>
+            <th>Número</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
                 <tr>
-                    <td><?= $fila['dept_no'] ?></td>
-                    <td><?= $fila['dnombre'] ?></td>
-                    <td><?= $fila['loc'] ?></td>
+                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= htmlentities($fila['dnombre']) ?></td>
+                    <td><?= htmlentities($fila['loc']) ?></td>
                 </tr><?php
             } ?>
         </tbody>
