@@ -23,9 +23,9 @@ create table depart (
 
 insert into depart (dept_no, dnombre, localidad_id)
     values (10, 'CONTABILIDAD', 1),
-           (20, 'INVESTIGACIÓN', 1),
-           (30, 'VENTAS', 1),
-           (40, 'PRODUCCIÓN', 1);
+           (20, 'INVESTIGACIÓN', 2),
+           (30, 'VENTAS', 3),
+           (40, 'PRODUCCIÓN', 4);
 
 drop view if exists depart_v cascade;
 
