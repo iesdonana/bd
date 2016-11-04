@@ -200,7 +200,7 @@ function conectar_bd(): PDO
  */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
+    return buscar_por_dept_no_y_dnombre_y_loc($pdo, $dept_no, "", "");
 }
 
 /**
