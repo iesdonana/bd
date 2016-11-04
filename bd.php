@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+GET<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -8,9 +8,9 @@
         require 'auxiliar.php';
 
         try {
-            $dept_no = filter_input(INPUT_POST, "dept_no");
-            $dnombre = filter_input(INPUT_POST, "dnombre");
-            $loc = filter_input(INPUT_POST, "loc");
+            $dept_no = filter_input(INPUT_GET, "dept_no");
+            $dnombre = filter_input(INPUT_GET, "dnombre");
+            $loc = filter_input(INPUT_GET, "loc");
             dibujar_formulario($dept_no,$dnombre,$loc);
             $error = [];
             comprobar_dept_no($dept_no, $error);
