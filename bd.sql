@@ -5,7 +5,7 @@ create table localidades(
     loc varchar(100) not null
 );
 
-insert into localidades (localidad)
+insert into localidades (loc)
     values  ('SANLÚCAR'),
             ('JEREZ'),
             ('TREBUJENA'),
@@ -21,13 +21,13 @@ create table depart (
                               on delete set null on update cascade
 );
 
-insert into (depart)
+insert into depart (dept_no, dnombre, localidad_id)
     values  (10, 'CONTABILIDAD' , 1),
             (20, 'INVESTIGACIÓN', 2),
             (30, 'VENTAS', 3),
             (40, 'PRODUCCIÓN', 4);
 
-drop view if exists depaart_v cascade;
+drop view if exists depart_v cascade;
 
 create view depart_v as
     select *
