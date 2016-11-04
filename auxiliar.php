@@ -1,9 +1,7 @@
 <?php
-
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
-
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -12,7 +10,6 @@ function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     throw new ErrorException($mensaje, 0, $severidad, $fichero, $línea);
 }
 set_error_handler("exception_error_handler");
-
 /**
  * Muestra por la salida los errores del argumento.
  * @param  array $err El array que contiene los errores
@@ -23,7 +20,6 @@ function mostrar_errores($err)
         <h3>Error: <?= htmlentities($e) ?></h3><?php
     }
 }
-
 /**
  * Muestra un mensaje de saludo.
  * @param  string $nombre   El nombre de la persona
@@ -34,7 +30,6 @@ function saludar(string $nombre, string $telefono)
     <h2>Hola, <?= htmlentities($nombre) ?>.
         Tu teléfono es <?= htmlentities($telefono) ?></h2><?php
 }
-
 function param_falta($param, $humano, &$error)
 {
     if ($param === null) {
@@ -43,7 +38,6 @@ function param_falta($param, $humano, &$error)
     }
     return false;
 }
-
 function param_longmax($param, $humano, $max, &$error)
 {
     if (mb_strlen($param) > $max) {
@@ -52,7 +46,6 @@ function param_longmax($param, $humano, $max, &$error)
     }
     return false;
 }
-
 function param_vacio($param, $humano, &$error)
 {
     if ($param === "") {
@@ -61,7 +54,6 @@ function param_vacio($param, $humano, &$error)
     }
     return false;
 }
-
 function comprobar_nombre($nombre, $humano, &$error)
 {
     if (param_falta($nombre, $humano, $error) ||
@@ -70,14 +62,12 @@ function comprobar_nombre($nombre, $humano, &$error)
         return;
     }
 }
-
 function comprobar_telefono($telefono, $humano, &$error)
 {
     if (param_falta($telefono, $humano, $error) ||
         param_longmax($telefono, $humano, 9, $error)) {
         return;
     }
-
     if (filter_var($telefono, FILTER_VALIDATE_INT, [
         'options' => [
             'min_range' => 100000000,
@@ -87,14 +77,12 @@ function comprobar_telefono($telefono, $humano, &$error)
         $error[] = "El campo $humano debe ser un número de 9 dígitos";
     }
 }
-
 function comprobar_errores($error)
 {
     if (!empty($error)) {
         throw new Exception;
     }
 }
-
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
@@ -104,7 +92,6 @@ function comprobar_existen($params)
     }
     throw new Exception;
 }
-
 /**
  * Comprueba si el dept_no es valido
  * @param  string $dept_no Número de departamento
@@ -113,7 +100,6 @@ function comprobar_existen($params)
 function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
     $dept_no = trim($dept_no);
-
     if ($escenario === ESC_INSERTAR) {
         if ($dept_no === "") {
             $error[] = "El número es obligatorio";
@@ -130,16 +116,13 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
                         " ya existe";
         }
     }
-
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
     }
-
     if (mb_strlen($dept_no) > 2) {
         $error[] = "El número de departamento debe contener 1 ó 2 dígitos";
     }
 }
-
 /**
  * Comprueba si el dnombre es valido
  * @param  string $dnombre Nombre del departamento
@@ -148,16 +131,13 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = strtoupper(trim($dnombre));
-
     if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
     }
-
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
     }
 }
-
 /**
  * Comprueba si el loc es valido
  * @param  string $loc   Localidad del departamento
@@ -166,12 +146,10 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 function comprobar_loc(&$loc, array &$error)
 {
     $loc = strtoupper(trim($loc));
-
     if (mb_strlen($loc) > 50) {
         $error[] = "La localidad del departamento no puede tener mas de 50 caracteres";
     }
 }
-
 /**
  * Comprueba si alguno de los elementos del array de resultados de la busqueda
  * esta vacio
@@ -184,7 +162,6 @@ function comprobar_si_vacio(array $result, array &$error)
         $error[] = "No existe ese departamento";
     }
 }
-
 /**
  * Comprueba si alguno de los elementos del array existe
  * @param  array  $params Array con los elementos a buscar
@@ -199,7 +176,6 @@ function comprobar_si_hay_uno(array $params, array &$error)
     }
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
-
 /**
  * Crea una conexión a la base de datos
  * @return PDO Conexión a la base de datos
@@ -212,7 +188,6 @@ function conectar_bd(): PDO
         'christian'
     );
 }
-
 /**
  * Realiza la busqueda unicamente por dept_no
  * @param  PDO    $pdo     Conexion a la base de datos
@@ -223,7 +198,6 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
     return buscar_por_dept_no_dnombre_y_loc($pdo, $dept_no, "", "");
 }
-
 /**
  * Realiza la busqueda en la base de datos por dept_no, dnombre y loc
  * @param  PDO    $pdo     Conexion a la base de datos
@@ -256,7 +230,6 @@ function buscar_por_dept_no_dnombre_y_loc(
     $orden->execute($params);
     return $orden->fetchAll();
 }
-
 /**
  * Dibuja la tabla con los datos solicitados
  * @param  array  $result Array con el resultado de la consulta
@@ -286,7 +259,6 @@ function dibujar_tabla(array $result)
         </tbody>
     </table><?php
 }
-
 /**
  * Dibuja el formlario de consulta
  * @param  string $dept_no Número del departamento
