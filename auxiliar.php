@@ -1,5 +1,9 @@
 <?php
 
+define("ESC_CONSULTA", 0);
+define("ESC_INSERTAR", 1);
+define("ESC_MODIFICAR", 2);
+
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -101,13 +105,30 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
-function comprobar_dept_no(&$dept_no, array &$error)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
     if ($dept_no === null) {
         throw new Exception;
     }
 
     $dept_no = trim($dept_no);
+
+    if ($escenario === ESC_INSERTAR){
+        if($dept_no === '') {
+            $error[] = "El número es obligatorio";
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))){
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                       " ya existe";
+        }
+    } elseif ($escenario === ESC_MODIFICAR) {
+        if($dept_no === '') {
+            $error[] = "El número es obligatorio";
+        } elseif ($dept_no !== $dept_no_viejo &&
+                  !empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
+                    $error[] = "El departamento " . htmlentities($dept_no) .
+                               " ya existe";
+        }
+    }
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -118,7 +139,7 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
-function comprobar_dnombre(&$dnombre, array &$error)
+function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     if ($dnombre === null) {
         throw new Exception;
@@ -126,11 +147,20 @@ function comprobar_dnombre(&$dnombre, array &$error)
 
     $dnombre = mb_strtoupper(trim($dnombre));
 
+    if ($escenario === ESC_INSERTAR && $dnombre === '') {
+        $error[] = "El nombre es obligatorio";
+    }
+
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
     }
 }
 
+/**
+ * Comprueba que loc exista y tenga un formato adecuado
+ * @param  string $loc   Parámetro a comprobar
+ * @param  array  $error Array de erroress
+ */
 function comprobar_loc(&$loc, array &$error)
 {
     if ($loc === null) {
@@ -175,6 +205,13 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
+/**
+ * Busca en la BD por dept_no y dnombre
+ * @param  PDO    $pdo     Objeto para conexión a la BD
+ * @param  string $dept_no Parámetro de búsqueda en la BD
+ * @param  string $dnombre Parámetro de búsqueda en la BD
+ * @return array           Resultado de la consulta
+ */
 function buscar_por_dept_no_y_dnombre(
     PDO $pdo,
     string $dept_no,
@@ -195,6 +232,14 @@ function buscar_por_dept_no_y_dnombre(
     return $orden->fetchAll();
 }
 
+/**
+ * Buscar en la tabla depart
+ * @param  PDO    $pdo     Objeto para conexión con BD
+ * @param  string $dept_no Parámetro para la BD
+ * @param  string $dnombre Parámetro para la BD
+ * @param  string $loc     Parámetro para la BD
+ * @return array           Devuelve el resultado de la consulta
+ */
 function buscar_en_depart(PDO $pdo,
     string $dept_no,
     string $dnombre,
@@ -219,20 +264,29 @@ function buscar_en_depart(PDO $pdo,
     return $orden->fetchAll();
 }
 
+/**
+ * Dibuja la tabla con los resultados de la consulta
+ * @param  array  $result Resultado de la consulta a la BD
+ */
 function dibujar_tabla(array $result)
 { ?>
     <table border="1">
         <thead>
-            <th>DEPT_NO</th>
-            <th>DNOMBRE</th>
-            <th>LOC</th>
+            <th>Número</th>
+            <th>Nombre</th>
+            <th>Localidad</th>
+            <th>Opciones</th>
         </thead>
         <tbody><?php
-            foreach ($result as $fila) { ?>
+            foreach ($result as $fila) {?>
                 <tr>
                     <td><?= htmlentities($fila['dept_no']) ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
+                    <td>
+                        <a href="borrar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Borrar</a>
+                        <a href="modificar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Modificar</a>
+                    </td>
                 </tr><?php
             } ?>
         </tbody>

@@ -6,12 +6,13 @@
     </head>
     <body><?php
         require 'auxiliar.php';
-        
-        $dept_no = filter_input(INPUT_POST, "dept_no");
-        $dnombre = filter_input(INPUT_POST, "dnombre");
-        $loc = filter_input(INPUT_POST, "loc");?>
 
-        <form action="" method="post">
+        $dept_no = filter_input(INPUT_GET, "dept_no");
+        $dnombre = filter_input(INPUT_GET, "dnombre");
+        $loc = filter_input(INPUT_GET, "loc");?>
+
+        <form action="" method="get">
+            <h4>Departamentos</h4>
             <label for="dept_no">Número de departamento:</label>
             <input type="text" id="dept_no" name="dept_no"
                 value="<?= htmlentities($dept_no) ?>"/><br/>
@@ -22,6 +23,7 @@
             <input type="text" id="loc" name="loc"
                 value="<?= htmlentities($loc) ?>"/><br/>
             <input type="submit" value="Buscar" />
+            <input type="button" value="Insertar" onclick="location.assign('insertar.php')" />
         </form><?php
 
         try {
