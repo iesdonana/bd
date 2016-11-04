@@ -117,10 +117,6 @@ function comprobar_existen($params)
  */
 function comprobar_dept_no(&$dept_no, array &$error)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
-
     $dept_no = trim($dept_no);
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
@@ -139,10 +135,6 @@ function comprobar_dept_no(&$dept_no, array &$error)
  */
 function comprobar_dnombre(&$dnombre, array &$error)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = trim($dnombre);
 
     if (mb_strlen($dnombre) > 20) {
@@ -157,10 +149,6 @@ function comprobar_dnombre(&$dnombre, array &$error)
  */
 function comprobar_loc(&$loc, array &$error)
 {
-    if ($loc === null) {
-        throw new Exception;
-    }
-
     $loc = trim($loc);
 
     if (mb_strlen($loc) > 50) {
@@ -261,11 +249,18 @@ function dibujar_tabla(array $result)
             <th>Localidad</th>
         </thead>
         <tbody><?php
-            foreach ($result as $fila) { ?>
+            foreach ($result as $fila) {
+                $dept_no = htmlentities($fila['dept_no']);?>
                 <tr>
-                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= $dept_no ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
+                    <td>
+                        <a href="borrar.php?dept_no=<?= $dept_no ?>" role="button">Borrar</a>
+                        <a href="modificar.php" role="button">Modificar</a>
+                        <a href="ver.php" role="button">Ver</a>
+
+                    </td>
                 </tr><?php
             } ?>
         </tbody>
