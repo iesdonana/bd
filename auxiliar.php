@@ -195,7 +195,7 @@ function buscar_por_dept_no_y_dnombre(
     string $dept_no,
     string $dnombre
 ): array {
-    $sql = "select * from depart where true";
+    $sql = "select * from depart_v where true";
     $params = [];
     if ($dept_no !== "") {
         $sql .= " and dept_no = :dept_no";
@@ -216,7 +216,7 @@ function buscar_por_dept_no_dnombre_loc(
     string $dnombre,
     string $loc
 ): array {
-    $sql = "select * from depart where true";
+    $sql = "select * from depart_v where true";
     $params = [];
     if ($dept_no !== "") {
         $sql .= " and dept_no = :dept_no";
