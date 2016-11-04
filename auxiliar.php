@@ -1,5 +1,8 @@
 <?php
 
+define("ESC_CONSULTA", 0);
+define("ESC_INSERTAR", 1);
+
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -101,9 +104,18 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
-function comprobar_dept_no(&$dept_no, array &$error)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
 {
     $dept_no = trim($dept_no);
+
+    if ($escenario === ESC_INSERTAR) {
+        if ($dept_no === "") {
+            $error[] = "El número es obligatorio";
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                       " ya existe";
+        }
+    }
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -114,9 +126,13 @@ function comprobar_dept_no(&$dept_no, array &$error)
     }
 }
 
-function comprobar_dnombre(&$dnombre, array &$error)
+function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = trim($dnombre);
+
+    if ($escenario === ESC_INSERTAR && $dnombre === "") {
+        $error[] = "El nombre es obligatorio";
+    }
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
@@ -127,8 +143,8 @@ function comprobar_loc(&$loc, array &$error)
 {
     $loc = trim($loc);
 
-    if (mb_strlen($loc) > 20) {
-        $error[] = "La localidad del departamento no puede tener más de 20 caracteres";
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
     }
 }
 
