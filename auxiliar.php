@@ -2,6 +2,7 @@
 
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
+define("ESC_MODIFICAR", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -19,7 +20,9 @@ set_error_handler("exception_error_handler");
 function mostrar_errores($err)
 {
     foreach ($err as $e) { ?>
-        <h3>Error: <?= htmlentities($e) ?></h3><?php
+        <div class="alert alert-danger" role="alert">
+            Error: <?= htmlentities($e) ?>
+        </div><?php
     }
 }
 
@@ -104,7 +107,7 @@ function comprobar_existen($params)
     throw new Exception;
 }
 
-function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
     $dept_no = trim($dept_no);
 
@@ -112,6 +115,14 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
         if ($dept_no === "") {
             $error[] = "El número es obligatorio";
         } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                       " ya existe";
+        }
+    } elseif ($escenario === ESC_MODIFICAR) {
+        if ($dept_no === "") {
+            $error[] = "El número es obligatorio";
+        } elseif ($dept_no !== $dept_no_viejo &&
+                  !empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
             $error[] = "El departamento " . htmlentities($dept_no) .
                        " ya existe";
         }
@@ -128,7 +139,7 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
 
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
-    $dnombre = trim($dnombre);
+    $dnombre = strtoupper(trim($dnombre));
 
     if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
@@ -141,7 +152,7 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 
 function comprobar_loc(&$loc, array &$error)
 {
-    $loc = trim($loc);
+    $loc = strtoupper(trim($loc));
 
     if (mb_strlen($loc) > 50) {
         $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
@@ -246,7 +257,7 @@ function dibujar_tabla(array $result)
                     <td><?= htmlentities($fila['loc']) ?></td>
                     <td>
                         <a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
-                        <a href="modificar.php" class="btn btn-info btn-xs" role="button">Modificar</a>
+                        <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
                         <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
                     </td>
                 </tr><?php
