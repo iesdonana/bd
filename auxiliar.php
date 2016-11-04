@@ -155,6 +155,10 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
         $error[] = "El nombre es obligatorio";
     }
 
+    if ($escenario === ESC_INSERTAR && $dnombre === "") {
+        $error[] = "El nombre es obligatorio";
+    }
+
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
     }
