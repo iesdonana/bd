@@ -2,6 +2,7 @@
 
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
+define("ESC_MODIFICAR", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -49,7 +50,7 @@ function comprobar_existen($params)
  * @param  string $dept_no El numero del departamento
  * @param  array  $error   El array que contiene los errores
  */
-function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
     if ($dept_no === null) {
         throw new Exception;
@@ -61,6 +62,12 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
         if ($dept_no === "") {
             $error[] = "El número es obligatorio";
         } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
+            $error[] = "El departamento " . htmlentities($dept_no) . " ya existe.";
+        }
+    } elseif ($escenario === ESC_MODIFICAR) {
+        if ($dept_no === "") {
+            $error[] = "El número es obligatorio";
+        } elseif ($dept_no !== $dept_no_viejo && !empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
             $error[] = "El departamento " . htmlentities($dept_no) . " ya existe.";
         }
     }
@@ -85,7 +92,7 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
         throw new Exception;
     }
 
-    $dnombre = trim($dnombre);
+    $dnombre = strtoupper(trim($dnombre));
 
     if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
@@ -107,7 +114,7 @@ function comprobar_loc(&$loc, array &$error)
         throw new Exception;
     }
 
-    $loc = trim($loc);
+    $loc = strtoupper(trim($loc));
 
     if (mb_strlen($loc) > 50) {
         $error[] = "El nombre de la localidad no puede tener más de 50 caracteres";
@@ -191,13 +198,14 @@ function dibujar_tabla(array $result)
             <th>Operaciones</th>
         </thead>
         <tbody><?php
-            foreach ($result as $fila) { ?>
+            foreach ($result as $fila) {
+                $dept_no = htmlentities($fila['dept_no']) ?>
                 <tr>
-                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= $dept_no ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
-                    <td><a href="borrar.php?dept_no=<?= $fila['dept_no'] ?>" role="button">Borrar</a>
-                        <a href="#" role="button">Modificar</a>
+                    <td><a href="borrar.php?dept_no=<?= $dept_no ?>" role="button">Borrar</a>
+                        <a href="modificar.php?dept_no=<?= $dept_no ?>" role="button">Modificar</a>
                         <a href="#" role="button">Ver</a></td>
                 </tr><?php
             } ?>

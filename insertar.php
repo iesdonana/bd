@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Bases de datos</title>
+        <title>Insertar un departamento</title>
     </head>
     <body><?php
         require 'auxiliar.php';
