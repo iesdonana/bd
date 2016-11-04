@@ -2,7 +2,11 @@
 <html>
     <head>
         <meta charset="utf-8">
+<<<<<<< bd6fda6af1eab21e97a2125b2f969563fb209235
         <title>Insertar un nuevo departamento</title>
+=======
+        <title>Insertar un departamento</title>
+>>>>>>> se borran departamentos
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
@@ -13,6 +17,7 @@
             body { padding: 60px; }
         </style>
     </head>
+<<<<<<< bd6fda6af1eab21e97a2125b2f969563fb209235
     <body><?php
         require "auxiliar.php";
 
@@ -41,6 +46,9 @@
         } catch (Exception $e) {
             mostrar_errores($error);
         } ?>
+=======
+    <body>
+>>>>>>> se borran departamentos
         <div class="container">
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
@@ -49,11 +57,19 @@
                         <div class="panel-body">
                             <form action="" method="post">
                                 <div class="form-group">
+<<<<<<< bd6fda6af1eab21e97a2125b2f969563fb209235
                                     <label for="dept_no">Número *</label>
                                     <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
                                     <label for="dnombre">Nombre *</label>
+=======
+                                    <label for="dept_no">Número</label>
+                                    <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="dnombre">Nombre</label>
+>>>>>>> se borran departamentos
                                     <input type="text" id="dnombre" name="dnombre"  value="<?= htmlentities($dnombre) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
