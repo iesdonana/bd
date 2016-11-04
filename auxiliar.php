@@ -1,5 +1,8 @@
 <?php
 
+define("ESC_CONSULTA", 0);
+define("ESC_INSERTAR", 1);
+
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -115,9 +118,19 @@ function comprobar_existen($params)
  * @param  string $dept_no  Número de departamento.
  * @param  array  $error    Array con los errores.
  */
-function comprobar_dept_no(&$dept_no, array &$error)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
 {
     $dept_no = trim($dept_no);
+
+    if ($escenario === ESC_INSERTAR)
+    {
+        if ($dept_no === ""){
+            $error[] = "El número es obligatorio";
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))){
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                        " ya existe";
+        }
+    }
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -130,12 +143,18 @@ function comprobar_dept_no(&$dept_no, array &$error)
 
 /**
  * Comprueba que el nombre de departamento contenga valores válidos.
- * @param  string $dnombre  Nombre de departamento.
- * @param  array  $error    Array con los errores.
+ * @param  string   $dnombre      Nombre de departamento.
+ * @param  array    $error        Array con los errores.
+ * @param  integer  $escenario    Constante que vale 0 ó 1 segun si estamos
+ *                                en consulta o inserción.
  */
-function comprobar_dnombre(&$dnombre, array &$error)
+function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = trim($dnombre);
+
+    if ($escenario === ESC_INSERTAR && $dnombre === ""){
+        $error[] = "El nombre es obligatorio";
+    }
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
