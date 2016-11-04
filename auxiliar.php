@@ -20,7 +20,9 @@ set_error_handler("exception_error_handler");
 function mostrar_errores($err)
 {
     foreach ($err as $e) { ?>
-        <h3>Error: <?= htmlentities($e) ?></h3><?php
+        <div class="alert alert-danger" role="alert">
+            Error: <?= htmlentities($e) ?>
+        </div><?php
     }
 }
 
@@ -190,7 +192,7 @@ function buscar_por_dept_no_dnombre_y_loc(
  */
 function dibujar_tabla(array $result)
 { ?>
-    <table border="1">
+    <table class="table">
         <thead>
             <th>Número</th>
             <th>Nombre</th>
@@ -204,9 +206,9 @@ function dibujar_tabla(array $result)
                     <td><?= $dept_no ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
-                    <td><a href="borrar.php?dept_no=<?= $dept_no ?>" role="button">Borrar</a>
-                        <a href="modificar.php?dept_no=<?= $dept_no ?>" role="button">Modificar</a>
-                        <a href="#" role="button">Ver</a></td>
+                    <td><a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                        <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
                 </tr><?php
             } ?>
         </tbody>
