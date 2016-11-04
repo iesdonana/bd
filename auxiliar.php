@@ -228,6 +228,7 @@ function saludar(string $nombre, string $telefono)
                     <td><?= htmlentities($fila['dept_no']) ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
+                    
                 </tr><?php
             } ?>
         </tbody>
