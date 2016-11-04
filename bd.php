@@ -7,18 +7,20 @@
     <body><?php
         require 'auxiliar.php';
 
-        $dept_no = filter_input(INPUT_POST, "dept_no");
-        $dnombre = filter_input(INPUT_POST, "dnombre");
-        $loc = filter_input(INPUT_POST, "loc"); ?>
+        $dept_no = filter_input(INPUT_GET, "dept_no");
+        $dnombre = filter_input(INPUT_GET, "dnombre");
+        $loc = filter_input(INPUT_GET, "loc"); ?>
 
-        <form action="" method="post">
+        <form action="" method="get">
             <label for="dept_no">Número de departamento:</label>
             <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>"/><br/>
             <label for="dnombre">Nombre de departamento:</label>
             <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>"/><br/>
             <label for="loc">Localidad del departamento:</label>
             <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>"/><br/>
-            <input type="submit" value="Buscar" />
+            <button type="submit">Buscar</button>
+            <button type="reset">Limpiar</button>
+            <a href="insertar.php" role="button">Insertar</a>
         </form><?php
 
         try {

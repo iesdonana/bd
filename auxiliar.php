@@ -1,5 +1,8 @@
 <?php
 
+define("ESC_CONSULTA", 0);
+define("ESC_INSERTAR", 1);
+
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -31,18 +34,36 @@ function comprobar_errores($error)
     }
 }
 
+function comprobar_existen($params)
+{
+    foreach ($params as $p) {
+        if ($p !== null) {
+            return true;
+        }
+    }
+    throw new Exception;
+}
+
 /**
  * Comprueba que los datos del número de departamento son correctos
  * @param  string $dept_no El numero del departamento
  * @param  array  $error   El array que contiene los errores
  */
-function comprobar_dept_no(&$dept_no, array &$error)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
 {
     if ($dept_no === null) {
         throw new Exception;
     }
 
     $dept_no = trim($dept_no);
+
+    if ($escenario === ESC_INSERTAR) {
+        if ($dept_no === "") {
+            $error[] = "El número es obligatorio";
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
+            $error[] = "El departamento " . htmlentities($dept_no) . " ya existe.";
+        }
+    }
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -58,13 +79,17 @@ function comprobar_dept_no(&$dept_no, array &$error)
  * @param  string $dnombre El nombre del departamento
  * @param  array  $error   El array que contiene los errores
  */
-function comprobar_dnombre(&$dnombre, array &$error)
+function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     if ($dnombre === null) {
         throw new Exception;
     }
 
     $dnombre = trim($dnombre);
+
+    if ($escenario === ESC_INSERTAR && $dnombre === "") {
+        $error[] = "El nombre es obligatorio";
+    }
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
@@ -114,6 +139,11 @@ function conectar_bd(): PDO
     );
 }
 
+function buscar_por_dept_no(PDO $pdo, string $dept_no): array
+{
+    return buscar_por_dept_no_dnombre_y_loc($pdo, $dept_no, "", "");
+}
+
 /**
  * Realiza la busqueda en la base de datos con los datos recibidos
  * @param  PDO    $pdo     La conexión con la base de datos
@@ -158,6 +188,7 @@ function dibujar_tabla(array $result)
             <th>Número</th>
             <th>Nombre</th>
             <th>Localidad</th>
+            <th>Operaciones</th>
         </thead>
         <tbody><?php
             foreach ($result as $fila) { ?>
@@ -165,6 +196,9 @@ function dibujar_tabla(array $result)
                     <td><?= htmlentities($fila['dept_no']) ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
+                    <td><a href="borrar.php?dept_no=<?= $fila['dept_no'] ?>" role="button">Borrar</a>
+                        <a href="#" role="button">Modificar</a>
+                        <a href="#" role="button">Ver</a></td>
                 </tr><?php
             } ?>
         </tbody>
