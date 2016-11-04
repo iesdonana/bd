@@ -1,5 +1,8 @@
 <?php
 
+define("ESC_CONSULTA", 0);
+define("ESC_INSERTAR", 1);
+
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
         // Este código de error no está incluido en error_reporting
@@ -106,9 +109,18 @@ function comprobar_existen($params)
  * @param  string $dept_no Número de departamento
  * @param  array  $error   Array de errores
  */
-function comprobar_dept_no(&$dept_no, array &$error)
+function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA)
 {
     $dept_no = trim($dept_no);
+
+    if ($escenario === ESC_INSERTAR) {
+        if ($dept_no === "") {
+            $error[] = "El número es obligatorio";
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(),$dept_no))) {
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                        " ya existe";
+        }
+    }
 
     if ($dept_no !== "" && !ctype_digit($dept_no)) {
         $error[] = "El número de departamento debe ser un número";
@@ -124,9 +136,13 @@ function comprobar_dept_no(&$dept_no, array &$error)
  * @param  string $dnombre Nombre del departamento
  * @param  array  $error   Array de errores
  */
-function comprobar_dnombre(&$dnombre, array &$error)
+function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = trim($dnombre);
+
+    if ($escenario === ESC_INSERTAR && $dnombre === "") {
+        $error[] = "El nombre es obligatorio";
+    }
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
@@ -269,7 +285,7 @@ function dibujar_tabla(array $result)
  */
 function dibujar_formulario($dept_no,$dnombre,$loc)
 { ?>
-    <form action="" method="post">
+    <form action="" method="get">
         <label for="dept_no">Número de departamento:</label>
         <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" /><br/>
         <label for="dnombre">Nombre de departamento:</label>
@@ -277,5 +293,7 @@ function dibujar_formulario($dept_no,$dnombre,$loc)
         <label for="loc">Localidad del departamento:</label>
         <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
         <input type="submit" value="Buscar" />
+        <input type="reset" value="Limpiar" />
+        <a href="insertar.php">Insertar</a>
     </form><?php
 }
