@@ -303,9 +303,8 @@ function dibujar_tabla(array $result)
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
                     <td>
-                        <a href="borrar.php?dept_no=<?= $fila['$dept_no'] ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                        <a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs">Borrar</a>
                         <a href="modificar.php" class="btn btn-info btn-xs" role="button">Modificar</a>
-                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
                     </td>
                 </tr><?php
             } ?>

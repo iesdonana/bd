@@ -16,9 +16,9 @@
     <body><?php
         require 'auxiliar.php';
 
-        $dept_no = filter_input(INPUT_GET, "dept_no");
-        $dnombre = filter_input(INPUT_GET, "dnombre");
-        $loc     = filter_input(INPUT_GET, "loc"); ?>
+        $dept_no = filter_input(INPUT_POST, "dept_no");
+        $dnombre = filter_input(INPUT_POST, "dnombre");
+        $loc     = filter_input(INPUT_POST, "loc"); ?>
 
         <div class="container">
             <div class="row">
@@ -40,6 +40,7 @@
                                     <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-default" />Buscar</button>
+                                <a href="insertar.php" class="btn btn-warning" />Insertar</a>
                             </form>
                         </div>
                     </div>
