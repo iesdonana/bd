@@ -196,7 +196,7 @@ function conectar_bd(): PDO
  */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
+    return buscar_por_dept_no_dnombre_y_loc($pdo, $dept_no, "", "");
 }
 
 /**
@@ -243,13 +243,18 @@ function dibujar_tabla(array $result)
             <th>Número</th>
             <th>Nombre</th>
             <th>Localidad</th>
+            <th>Operaciones</th>
         </thead>
         <tbody><?php
-            foreach ($result as $fila) { ?>
+            foreach ($result as $fila) {
+                $dept_no = htmlentities($fila['dept_no']); ?>
                 <tr>
-                    <td><?= htmlentities($fila['dept_no']) ?></td>
+                    <td><?= $dept_no ?></td>
                     <td><?= htmlentities($fila['dnombre']) ?></td>
                     <td><?= htmlentities($fila['loc']) ?></td>
+                    <td>
+                        <a href="borrar.php?dept_no=<?= $dept_no ?>" role="button">Borrar</a>
+                    </td>
                 </tr><?php
             } ?>
         </tbody>
