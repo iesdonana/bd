@@ -14,9 +14,12 @@
     <body><?php
         require 'auxiliar.php';
 
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
+
         $dept_no = filter_input(INPUT_GET, "dept_no");
         $dnombre = filter_input(INPUT_GET, "dnombre");
-        $loc     = filter_input(INPUT_GET, "loc"); ?>
+        $localidad_id = filter_input(INPUT_GET, "localidad_id"); ?>
 
         <div class="container">
             <div class="row">
@@ -35,18 +38,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <select class="form-control" name="loc">
-                                        <option></option><?php
-                                        $pdo = conectar_bd();
-                                        $result = buscar_localidades($pdo);
-                                        foreach ($result as $fila) {
-                                                if ($loc === $fila['loc']) { ?>
-                                                    <option selected><?= htmlentities($fila['loc']) ?> </option><?php
-                                                } else { ?>
-                                                    <option><?= htmlentities($fila['loc']) ?> </option><?php
-                                                }
-                                        } ?>
-                                    </select>
+                                    <?php lista_localidades($localidades, $localidad_id); ?>
                                 </div>
                                 <button type="submit" class="btn btn-default">Buscar</button>
                                 <button type="reset" class="btn">Limpiar</button>
@@ -61,10 +53,9 @@
             $error = [];
             comprobar_dept_no($dept_no, $error);
             comprobar_dnombre($dnombre, $error);
-            comprobar_loc($loc, $error);
+            comprobar_localidad_id($localidad_id, $pdo, $error);
             comprobar_errores($error);
-            //$pdo = conectar_bd();
-            $result = buscar_por_dept_no_dnombre_loc($pdo, $dept_no, $dnombre, $loc);
+            $result = buscar_por_dept_no_dnombre_localidad_id($pdo, $dept_no, $dnombre, $localidad_id);
             comprobar_si_vacio($result, $error);
             comprobar_errores($error);
             dibujar_tabla($result);

@@ -150,12 +150,20 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
-function comprobar_loc(&$loc, array &$error)
+function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
 {
-    $loc = strtoupper(trim($loc));
+    $localidad_id = trim($localidad_id);
 
-    if (mb_strlen($loc) > 50) {
-        $error[] = "La localidad del departamento no puede tener más de 50 caracteres";
+    if ($localidad_id === "") {
+        return;
+    }
+
+    $orden = $pdo->prepare("select * from localidades where id = :localidad_id");
+    $orden->execute(['localidad_id' => $localidad_id]);
+    $result = $orden->fetchAll();
+
+    if (empty($result)) {
+        $error[] = "No existe la localidad indicada.";
     }
 }
 
@@ -187,7 +195,7 @@ function conectar_bd(): PDO
 
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    return buscar_por_dept_no_dnombre_loc($pdo, $dept_no, "", "");
+    return buscar_por_dept_no_dnombre_localidad_id($pdo, $dept_no, "", "");
 }
 
 function buscar_por_dept_no_y_dnombre(
@@ -210,11 +218,11 @@ function buscar_por_dept_no_y_dnombre(
     return $orden->fetchAll();
 }
 
-function buscar_por_dept_no_dnombre_loc(
+function buscar_por_dept_no_dnombre_localidad_id(
     PDO $pdo,
     string $dept_no,
     string $dnombre,
-    string $loc
+    string $localidad_id
 ): array {
     $sql = "select * from depart_v where true";
     $params = [];
@@ -226,22 +234,41 @@ function buscar_por_dept_no_dnombre_loc(
         $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
     }
-    if ($loc !== "") {
-        $sql .= " and loc ilike :loc";
-        $params[':loc'] = "%$loc%";
+    if ($localidad_id !== "" && $localidad_id !== null) {
+        $sql .= " and localidad_id = :localidad_id";
+        $params[':localidad_id'] = "$localidad_id";
     }
+
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
     return $orden->fetchAll();
 }
 
-function buscar_localidades(PDO $pdo): array
+function obtener_localidades(PDO $pdo): array
 {
-    $sql = "select * from localidades where true";
+    $sql = "select * from localidades";
 
     $orden = $pdo->prepare($sql);
     $orden->execute();
     return $orden->fetchAll();
+}
+
+function lista_localidades(array $localidades, $localidad_id = null)
+{ ?>
+    <select class="form-control" name="localidad_id" id="localidad_id">
+        <option></option><?php
+        foreach ($localidades as $fila) {
+                if ($localidad_id == $fila['id']) { ?>
+                    <option selected value="<?= htmlentities($fila['id']) ?>">
+                        <?= htmlentities($fila['loc']) ?>
+                    </option><?php
+                } else { ?>
+                    <option value="<?= htmlentities($fila['id']) ?>">
+                        <?= htmlentities($fila['loc']) ?>
+                    </option><?php
+                }
+        } ?>
+    </select><?php
 }
 
 /**

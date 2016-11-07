@@ -14,42 +14,41 @@
     <body><?php
         require "auxiliar.php";
 
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
+
         $dept_no = filter_input(INPUT_GET, "dept_no");
 
         if ($dept_no !== null) {
-            $pdo = conectar_bd();
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)) {
                 header("Location: bd.php");
             }
             $result  = $result[0];
             $dnombre = $result['dnombre'];
-            $loc     = $result['loc'];
+            $localidad_id = $result['localidad_id'];
         } else {
             $dept_no_viejo = filter_input(INPUT_POST, "dept_no_viejo");
             $dept_no = filter_input(INPUT_POST, "dept_no");
             $dnombre = filter_input(INPUT_POST, "dnombre");
-            $loc     = filter_input(INPUT_POST, "loc");
+            $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
             try {
                 $error = [];
-                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $loc]);
+                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $localidad_id]);
                 comprobar_dept_no($dept_no, $error, ESC_MODIFICAR, $dept_no_viejo);
                 comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-                comprobar_loc($loc, $error);
+                comprobar_localidad_id($localidad_id, $pdo, $error);
                 comprobar_errores($error);
-                $pdo = conectar_bd();
                 $orden = $pdo->prepare("update depart
                                            set dept_no = :dept_no,
                                                dnombre = :dnombre,
-                                          localidad_id = (select id
-                                                            from localidades
-                                                           where loc = :loc)
+                                          localidad_id = :localidad_id
                                          where dept_no = :dept_no_viejo");
                 $orden->execute([
                     ':dept_no'       => $dept_no,
                     ':dnombre'       => $dnombre,
-                    ':loc'           => $loc,
+                    ':localidad_id'  => $localidad_id,
                     ':dept_no_viejo' => $dept_no_viejo
                 ]);
                 header("Location: bd.php");
@@ -78,18 +77,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <select class="form-control" name="loc">
-                                        <option></option><?php
-                                        $pdo = conectar_bd();
-                                        $result = buscar_localidades($pdo);
-                                        foreach ($result as $fila) {
-                                                if ($loc === $fila['loc']) { ?>
-                                                    <option selected><?= htmlentities($fila['loc']) ?> </option><?php
-                                                } else { ?>
-                                                    <option><?= htmlentities($fila['loc']) ?> </option><?php
-                                                }
-                                        } ?>
-                                    </select>
+                                    <?php lista_localidades($localidades, $localidad_id); ?>
                                 </div>
                                 <button type="submit" class="btn btn-default">Modificar</button>
                                 <button type="reset" class="btn">Limpiar</button>

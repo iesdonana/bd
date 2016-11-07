@@ -14,26 +14,27 @@
     <body><?php
         require "auxiliar.php";
 
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
+
         $dept_no = filter_input(INPUT_POST, "dept_no");
         $dnombre = filter_input(INPUT_POST, "dnombre");
-        $loc     = filter_input(INPUT_POST, "loc");
+        $localidad_id     = filter_input(INPUT_POST, "localidad_id");
 
         try {
             $error = [];
-            comprobar_existen([$dept_no, $dnombre, $loc]);
+            comprobar_existen([$dept_no, $dnombre, $localidad_id]);
             comprobar_dept_no($dept_no, $error, ESC_INSERTAR);
             comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-            comprobar_loc($loc, $error);
+            comprobar_localidad_id($localidad_id, $pdo, $error);
             comprobar_errores($error);
             $pdo = conectar_bd();
             $orden = $pdo->prepare("insert into depart (dept_no, dnombre, localidad_id)
-                                    values (:dept_no, :dnombre, (select id
-                                                                   from localidades
-                                                                  where loc = :loc))");
+                                    values (:dept_no, :dnombre, :localidad_id)");
             $orden->execute([
-                ':dept_no' => $dept_no,
-                ':dnombre' => $dnombre,
-                ':loc'     => $loc
+                ':dept_no'          => $dept_no,
+                ':dnombre'          => $dnombre,
+                ':localidad_id'     => $localidad_id
             ]);
             header("Location: bd.php");
         } catch (PDOException $e) { ?>
@@ -58,13 +59,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <select class="form-control" name="loc"><?php
-                                        $pdo = conectar_bd();
-                                        $result = buscar_localidades($pdo);
-                                        foreach ($result as $fila) { ?>
-                                            <option><?= htmlentities($fila['loc']) ?> </option><?php
-                                        } ?>
-                                    </select>
+                                    <?php lista_localidades($localidades); ?>
                                 </div>
                                 <button type="submit" class="btn btn-default">Insertar</button>
                                 <button type="reset" class="btn">Limpiar</button>
