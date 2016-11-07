@@ -216,7 +216,7 @@ function conectar_bd(): PDO
  */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    return buscar_por_dept_no_dnombre_y_loc($pdo, $dept_no, "", "");
+    return buscar_por_dept_no_dnombre_y_localidad_id($pdo, $dept_no, "", "");
 }
 /**
  * Realiza la busqueda en la base de datos por dept_no, dnombre y loc
