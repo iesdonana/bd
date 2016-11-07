@@ -31,4 +31,4 @@ drop view if exists depart_v cascade;
 
 create view depart_v as
     select *
-    from depart d join localidades l on d.localidad_id = l.id;
+    from depart d left join localidades l on d.localidad_id = l.id;
