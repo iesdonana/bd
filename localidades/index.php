@@ -12,33 +12,22 @@
         </style>
     </head>
     <body><?php
-        require 'auxiliar.php';
+        require '../comunes/auxiliar.php';
 
         $pdo = conectar_bd();
-        $localidades = obtener_localidades($pdo);
 
-        $dept_no = filter_input(INPUT_GET, "dept_no");
-        $dnombre = filter_input(INPUT_GET, "dnombre");
-        $localidad_id = filter_input(INPUT_GET, "localidad_id"); ?>
+        $loc = filter_input(INPUT_GET, "loc"); ?>
 
         <div class="container">
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Consulta de departamentos</div>
+                        <div class="panel-heading">Consulta de localidades</div>
                         <div class="panel-body">
                             <form action="" method="get">
                                 <div class="form-group">
-                                    <label for="dept_no">Número</label>
-                                    <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="dnombre">Nombre</label>
-                                    <input type="text" id="dnombre" name="dnombre"  value="<?= htmlentities($dnombre) ?>" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="localidad_id">Localidad</label>
-                                    <?php lista_localidades($localidades, $localidad_id) ?>
+                                    <label for="loc">Localidad</label>
+                                    <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-default">Buscar</button>
                                 <button type="reset" class="btn">Limpiar</button>
@@ -51,14 +40,12 @@
         </div><?php
         try {
             $error = [];
-            comprobar_dept_no($dept_no, $error);
-            comprobar_dnombre($dnombre, $error);
-            comprobar_localidad_id($localidad_id, $pdo, $error);
+            comprobar_loc($loc, $error);
             comprobar_errores($error);
-            $result = buscar_por_dept_no_dnombre_localidad_id($pdo, $dept_no, $dnombre, $localidad_id);
+            $result = buscar_por_loc($pdo, $loc);
             comprobar_si_vacio($result, $error);
             comprobar_errores($error);
-            dibujar_tabla($result);
+            dibujar_tabla_localidades($result);
         } catch (PDOException $e) { ?>
             <h3>Error de conexión a la base de datos</h3><?php
         } catch (Exception $e) {

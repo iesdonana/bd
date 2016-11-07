@@ -150,6 +150,15 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
+function comprobar_loc(&$loc, array &$error)
+{
+    $loc = strtoupper(trim($loc));
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad no puede tener más de 50 caracteres";
+    }
+}
+
 function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
 {
     $localidad_id = trim($localidad_id);
@@ -243,6 +252,20 @@ function buscar_por_dept_no_dnombre_localidad_id(
     return $orden->fetchAll();
 }
 
+function buscar_por_loc(PDO $pdo, string $loc = null): array
+{
+    $sql = "select * from localidades where true";
+    $params = [];
+
+    if ($loc !== "" && $loc !== null) {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
 /**
  * Dibuja la tabla con el resultado de la consulta
  * @param  array  $result Matriz de filas x columnas con el resultado
@@ -272,6 +295,33 @@ function dibujar_tabla(array $result)
             } ?>
         </tbody>
     </table><?php
+}
+
+function dibujar_tabla_localidades(array $result)
+{ ?>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <table class="table">
+                <thead>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $id = htmlentities($fila['id']); ?>
+                        <tr>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td>
+                                <a href="borrar.php?id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
+                            </td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
 }
 
 function obtener_localidades(PDO $pdo): array
