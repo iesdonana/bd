@@ -8,39 +8,39 @@
         require "auxiliar.php";
 
         $dept_no = filter_input(INPUT_GET, "dept_no");
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
 
         if ($dept_no !== null) {
-            $pdo = conectar_bd();
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)) {
                 header("Location: bd.php");
             }
             $result = $result[0];
             $dnombre = $result['dnombre'];
-            $loc = $result['loc'];
+            $localidad_id = $result['localidad_id'];
         } else {
             $dept_no_viejo = filter_input(INPUT_POST, "dept_no_viejo");
             $dept_no = filter_input(INPUT_POST, "dept_no");
             $dnombre = filter_input(INPUT_POST, "dnombre");
-            $loc = filter_input(INPUT_POST, "loc");
+            $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
             try {
                 $error = [];
-                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $loc]);
+                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $localidad_id]);
                 comprobar_dept_no($dept_no, $error, ESC_MODIFICAR, $dept_no_viejo);
                 comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-                comprobar_loc($loc, $error);
+                comprobar_localidad_id($localidad_id, $pdo, $error);
                 comprobar_errores($error);
-                $pdo = conectar_bd();
                 $orden = $pdo->prepare("update depart
                                         set dept_no = :dept_no,
                                             dnombre = :dnombre,
-                                            loc = :loc
+                                            localidad_id = :localidad_id
                                         where dept_no = :dept_no_viejo");
                 $orden->execute([
                     ':dept_no' => $dept_no,
                     ':dnombre' => $dnombre,
-                    ':loc' => $loc,
+                    ':localidad_id' => $localidad_id,
                     ':dept_no_viejo' => $dept_no_viejo
                 ]);
                 header("Location: bd.php");
@@ -57,7 +57,7 @@
             <label for="dnombre">Nombre de departamento *:</label>
             <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
             <label for="loc">Localidad del departamento:</label>
-            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
+            <?php lista_localidades($localidades, $localidad_id) ?>
             <input type="submit" value="Modificar" />
             <input type="reset" value="Limpiar" />
             <a href="bd.php">Cancelar</a>
