@@ -7,24 +7,26 @@
     <body><?php
         require "auxiliar.php";
 
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
+
         $dept_no = filter_input(INPUT_POST, "dept_no");
         $dnombre = filter_input(INPUT_POST, "dnombre");
-        $loc = filter_input(INPUT_POST, "loc");
+        $localidad_id = filter_input(INPUT_POST, "loc");
 
         try {
             $error = [];
-            comprobar_existen([$dept_no, $dnombre, $loc]);
+            comprobar_existen([$dept_no, $dnombre, $localidad_id]);
             comprobar_dept_no($dept_no, $error, ESC_INSERTAR);
             comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-            comprobar_loc($loc, $error);
+            comprobar_localidad_id($localidad_id, $pdo, $error);
             comprobar_errores($error);
-            $pdo = conectar_bd();
-            $orden = $pdo->prepare("insert into depart (dept_no,dnombre,loc)
-                                    values (:dept_no, :dnombre, :loc)");
+            $orden = $pdo->prepare("insert into depart (dept_no,dnombre,localidad_id)
+                                    values (:dept_no, :dnombre, :localidad_id)");
             $orden->execute([
                 ':dept_no' => $dept_no,
                 ':dnombre' => $dnombre,
-                ':loc' => $loc
+                ':localidad_id' => $localidad_id
             ]);
             header("Location: bd.php");
         } catch (PDOException $e) { ?>
@@ -39,8 +41,8 @@
             <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" /><br/>
             <label for="dnombre">Nombre de departamento *:</label>
             <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
-            <label for="loc">Localidad del departamento:</label>
-            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
+            <label for="localidad_id">Localidad del departamento:</label>
+            <?php lista_localidades($localidades) ?>
             <input type="submit" value="Insertar" />
             <input type="reset" value="Limpiar" />
             <a href="bd.php">Cancelar</a>
