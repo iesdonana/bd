@@ -63,7 +63,7 @@
             comprobar_dnombre($dnombre, $error);
             comprobar_loc($loc, $error);
             comprobar_errores($error);
-            $pdo = conectar_bd();
+            //$pdo = conectar_bd();
             $result = buscar_por_dept_no_dnombre_loc($pdo, $dept_no, $dnombre, $loc);
             comprobar_si_vacio($result, $error);
             comprobar_errores($error);

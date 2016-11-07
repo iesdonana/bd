@@ -179,7 +179,7 @@ function comprobar_si_hay_uno(array $params, array &$error)
 function conectar_bd(): PDO
 {
     return new PDO(
-        'pgsql:host=localhost;dbname=pruebas',
+        'pgsql:host=localhost;dbname=prueba',
         'recetas',
         'recetas'
     );

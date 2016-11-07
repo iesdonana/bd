@@ -26,8 +26,10 @@
             comprobar_loc($loc, $error);
             comprobar_errores($error);
             $pdo = conectar_bd();
-            $orden = $pdo->prepare("insert into depart (dept_no, dnombre, loc)
-                                    values (:dept_no, :dnombre, :loc)");
+            $orden = $pdo->prepare("insert into depart (dept_no, dnombre, localidad_id)
+                                    values (:dept_no, :dnombre, (select id
+                                                                   from localidades
+                                                                  where loc = :loc))");
             $orden->execute([
                 ':dept_no' => $dept_no,
                 ':dnombre' => $dnombre,
