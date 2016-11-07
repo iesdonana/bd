@@ -2,13 +2,11 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Insertar un departamento</title>
+        <title>Insertar un nuevo departamento</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <style type="text/css">
             body { padding: 60px; }
         </style>
@@ -58,7 +56,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
+                                    <select class="form-control" name="loc"><?php
+                                        $pdo = conectar_bd();
+                                        $result = buscar_localidades($pdo);
+                                        foreach ($result as $fila) { ?>
+                                            <option><?= htmlentities($fila['loc']) ?> </option><?php
+                                        } ?>
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-default">Insertar</button>
                                 <button type="reset" class="btn">Limpiar</button>

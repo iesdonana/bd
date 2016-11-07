@@ -12,7 +12,7 @@
         </style>
     </head>
     <body><?php
-        require 'auxiliar.php';
+        require "auxiliar.php";
 
         $dept_no = filter_input(INPUT_POST, "dept_no");
 

@@ -90,11 +90,6 @@ function comprobar_telefono($telefono, $humano, &$error)
     }
 }
 
-/**
- * Comprueba si el array que se le pasa por parametro no esta vacio
- * @param  array $error el array de errores
- * @throws Exception
- */
 function comprobar_errores($error)
 {
     if (!empty($error)) {
@@ -102,26 +97,16 @@ function comprobar_errores($error)
     }
 }
 
-/**
- * Comprueba que hay algun elemento del array $params que es distinto de null
- * @param  array $params array con elementos
- * @throws Exception
- */
 function comprobar_existen($params)
 {
     foreach ($params as $p) {
         if ($p !== null) {
-            return;
+            return true;
         }
     }
     throw new Exception;
 }
 
-/**
- * Comprueba que el numero del departamento este correcto para su buen uso
- * @param  string $dept_no numero del departamento
- * @param  array  $error   array de errores
- */
 function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
     $dept_no = trim($dept_no);
@@ -151,18 +136,10 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
         $error[] = "El número de departamento debe contener 1 ó 2 dígitos";
     }
 }
-/**
- * Comprueba que el nombre del departamento este correcto para su buen uso
- * @param  string $dnombre nombre del departamento
- * @param  array  $error   array de errores
- */
+
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = strtoupper(trim($dnombre));
-
-    if ($escenario === ESC_INSERTAR && $dnombre === "") {
-        $error[] = "El nombre es obligatorio";
-    }
 
     if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
@@ -173,15 +150,8 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
-/**
- * Se comprueba si el array que se le pasa esta vacio, si es asi rellena
- * el array error
- * @param  array  $result array a comprobar si esta vacio
- * @param  array  $error  array de errores
- */
 function comprobar_loc(&$loc, array &$error)
 {
-
     $loc = strtoupper(trim($loc));
 
     if (mb_strlen($loc) > 50) {
@@ -196,12 +166,6 @@ function comprobar_si_vacio(array $result, array &$error)
     }
 }
 
-/**
- * Comprueba si al menos uno de los parametros de $params es distinto de cadena
- * vacia, si no es asi añade un error al array $error
- * @param  array  $params array a comprobar
- * @param  array  $error  array de errores
- */
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
@@ -212,45 +176,26 @@ function comprobar_si_hay_uno(array $params, array &$error)
     $error[] = "Debe indicar al menos un criterio de búsqueda";
 }
 
-/**
- * Conecta con la base de datos
- * @return PDO devuelve un objeto PDO
- */
 function conectar_bd(): PDO
 {
     return new PDO(
-        'pgsql:host=localhost;dbname=prueba',
+        'pgsql:host=localhost;dbname=pruebas',
         'recetas',
         'recetas'
     );
 }
 
-/**
- * Busca en la tabla depart solo por dept_no
- * @param  PDO    $pdo     el objeto PDO con la conexion a la base de datos
- * @param  string $dept_no el numero de departamento a buscar
- * @return array           devuelve el array con los resultados
- */
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
 {
-    return buscar_en_depart($pdo, $dept_no, "", "");
+    return buscar_por_dept_no_dnombre_loc($pdo, $dept_no, "", "");
 }
 
-/**
- * Busca en la tabla depart por sus tres campos (dept_no, dnombre y loc)
- * @param  PDO    $pdo     el objeto PDO con la conexion a la base de datos
- * @param  string $dept_no el numero de departamento a buscar
- * @param  string $dnombre el nombre del departamento a buscar
- * @param  string $loc     la localización del departamento a buscar
- * @return array           devuelve el array con los resultados
- */
-function buscar_en_depart(
+function buscar_por_dept_no_y_dnombre(
     PDO $pdo,
     string $dept_no,
-    string $dnombre,
-    string $loc
+    string $dnombre
 ): array {
-    $sql = "select * from depart where true";
+    $sql = "select * from depart_v where true";
     $params = [];
     if ($dept_no !== "") {
         $sql .= " and dept_no = :dept_no";
@@ -271,7 +216,7 @@ function buscar_por_dept_no_dnombre_loc(
     string $dnombre,
     string $loc
 ): array {
-    $sql = "select * from depart where true";
+    $sql = "select * from depart_v where true";
     $params = [];
     if ($dept_no !== "") {
         $sql .= " and dept_no = :dept_no";
@@ -282,11 +227,20 @@ function buscar_por_dept_no_dnombre_loc(
         $params[':dnombre'] = "%$dnombre%";
     }
     if ($loc !== "") {
-        $sql .= " and loc like :loc";
+        $sql .= " and loc ilike :loc";
         $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_localidades(PDO $pdo): array
+{
+    $sql = "select * from localidades where true";
+
+    $orden = $pdo->prepare($sql);
+    $orden->execute();
     return $orden->fetchAll();
 }
 

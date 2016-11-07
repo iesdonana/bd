@@ -42,7 +42,9 @@
                 $orden = $pdo->prepare("update depart
                                            set dept_no = :dept_no,
                                                dnombre = :dnombre,
-                                               loc     = :loc
+                                          localidad_id = (select id
+                                                            from localidades
+                                                           where loc = :loc)
                                          where dept_no = :dept_no_viejo");
                 $orden->execute([
                     ':dept_no'       => $dept_no,
@@ -76,7 +78,18 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
+                                    <select class="form-control" name="loc">
+                                        <option></option><?php
+                                        $pdo = conectar_bd();
+                                        $result = buscar_localidades($pdo);
+                                        foreach ($result as $fila) {
+                                                if ($loc === $fila['loc']) { ?>
+                                                    <option selected><?= htmlentities($fila['loc']) ?> </option><?php
+                                                } else { ?>
+                                                    <option><?= htmlentities($fila['loc']) ?> </option><?php
+                                                }
+                                        } ?>
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-default">Modificar</button>
                                 <button type="reset" class="btn">Limpiar</button>
