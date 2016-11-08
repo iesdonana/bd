@@ -2,17 +2,18 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Localidades</title>
+        <title>Bases de datos</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <style type="text/css">
-            body { padding: 60px; }
-        </style>
     </head>
     <body><?php
         require '../comunes/auxiliar.php';
+
+        menu(CTX_LOCALIDADES);
+
+        $pdo = conectar_bd();
 
         $loc = filter_input(INPUT_GET, "loc"); ?>
 
@@ -37,7 +38,6 @@
             </div>
         </div><?php
         try {
-            $pdo = conectar_bd();
             $error = [];
             comprobar_loc($loc, $error);
             comprobar_errores($error);

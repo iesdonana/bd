@@ -7,20 +7,25 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <style type="text/css">
-            body { padding: 60px; }
-        </style>
     </head>
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu(CTX_LOCALIDADES);
+
         $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
-        if ($dept_no !== null) {
+        if ($localidad_id !== null) {
             $pdo = conectar_bd();
-            $orden = $pdo->prepare("delete from depart
+            $orden = $pdo->prepare("delete from localidades
                                      where id = :localidad_id");
             $orden->execute([':localidad_id' => $localidad_id]);
+            header("Location: index.php");
+        }
+
+        $localidad_id = filter_input(INPUT_GET, "localidad_id");
+
+        if ($localidad_id === null) {
             header("Location: index.php");
         }
 
@@ -28,7 +33,7 @@
         $pdo = conectar_bd();
 
         if (empty(buscar_por_localidad_id($pdo, $localidad_id))) { ?>
-            <h3>Error: la localidad <?= htmlentities($dept_no) ?> no existe</h3>
+            <h3>Error: la localidad <?= htmlentities($localidad_id) ?> no existe</h3>
             <a href="index.php" class="btn btn-warning" role="button">Volver</a><?php
         } else { ?>
             <h3>¿Seguro que quiere borrar la localidad <?= htmlentities($localidad_id) ?>?</h3>

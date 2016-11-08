@@ -7,12 +7,11 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <style type="text/css">
-            body { padding: 60px; }
-        </style>
     </head>
     <body><?php
         require "../comunes/auxiliar.php";
+
+        menu(CTX_DEPART);
 
         $dept_no = filter_input(INPUT_POST, "dept_no");
 
@@ -20,13 +19,13 @@
             $pdo = conectar_bd();
             $orden = $pdo->prepare("delete from depart where dept_no = :dept_no");
             $orden->execute([':dept_no' => $dept_no]);
-            header("Location: bd.php");
+            header("Location: index.php");
         }
 
         $dept_no = filter_input(INPUT_GET, "dept_no");
 
         if ($dept_no === null) {
-            header("Location: bd.php");
+            header("Location: index.php");
         }
 
         $dept_no = trim($dept_no);
@@ -34,13 +33,13 @@
 
         if (empty(buscar_por_dept_no($pdo, $dept_no))) { ?>
             <h3>Error: el departamento <?= htmlentities($dept_no) ?> no existe</h3>
-            <a href="bd.php" class="btn btn-warning" role="button">Volver</a><?php
+            <a href="index.php" class="btn btn-warning" role="button">Volver</a><?php
         } else { ?>
             <h3>¿Seguro que quiere borrar el departamento <?= htmlentities($dept_no) ?>?</h3>
             <form action="" method="post">
                 <input type="hidden" name="dept_no" value="<?= htmlentities($dept_no) ?>" />
                 <button type="submit" class="btn btn-default">Sí</button>
-                <a href="bd.php" class="btn btn-warning" role="button">No</a>
+                <a href="index.php" class="btn btn-warning" role="button">No</a>
             </form><?php
         } ?>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
