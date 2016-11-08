@@ -34,7 +34,7 @@
 
         if (empty(buscar_por_localidad_id($pdo, $localidad_id))) { ?>
             <h3>Error la localidad <?= htmlentities($localidad_id) ?> no existe</h3>
-            <a href="bd.php" class="btn btn-warning" role="button">Volver</a> <?php
+            <a href="index.php" class="btn btn-warning" role="button">Volver</a> <?php
         } else {?>
             <h3>¿Seguro que quiere borrar la localidad <?= htmlentities($localidad_id) ?>?</h3>
             <form action="" method="post">
