@@ -33,7 +33,7 @@
                 ':dnombre' => $dnombre,
                 ':loc'     => $loc
             ]);
-            header("Location: bd.php");
+            header("Location: index.php");
         } catch (PDOException $e) { ?>
             <h3>Error de conexión a la base de datos</h3><?php
         } catch (Exception $e) {
@@ -60,7 +60,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-default">Insertar</button>
                                 <button type="reset" class="btn">Limpiar</button>
-                                <a href="bd.php" class="btn btn-warning" role="button">Cancelar</a>
+                                <a href="index.php" class="btn btn-warning" role="button">Cancelar</a>
                             </form>
                         </div>
                     </div>

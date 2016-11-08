@@ -20,7 +20,7 @@
             $pdo = conectar_bd();
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)) {
-                header("Location: bd.php");
+                header("Location: index.php");
             }
             $result  = $result[0];
             $dnombre = $result['dnombre'];
@@ -50,7 +50,7 @@
                     ':loc'           => $loc,
                     ':dept_no_viejo' => $dept_no_viejo
                 ]);
-                header("Location: bd.php");
+                header("Location: index.php");
             } catch (PDOException $e) { ?>
                 <h3>Error de conexión a la base de datos</h3><?php
             } catch (Exception $e) {
@@ -80,7 +80,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-default">Modificar</button>
                                 <button type="reset" class="btn">Limpiar</button>
-                                <a href="bd.php" class="btn btn-warning" role="button">Cancelar</a>
+                                <a href="index.php" class="btn btn-warning" role="button">Cancelar</a>
                             </form>
                         </div>
                     </div>
