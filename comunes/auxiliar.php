@@ -369,7 +369,7 @@ function lista_localidades(array $localidades, $localidad_id = null)
 
 function menu($contexto = null)
 { ?>
-    <h1>Menu principal</h1>
+    <h1><a href="/bd/index.php">Menu principal</a></h1>
     <ul>
         <li><a href="/bd/depart">Departamentos</a></li>
         <li><a href="/bd/localidades">Localidades</a></li>
