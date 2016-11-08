@@ -3,6 +3,9 @@
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
+define("CTX_DEPART", 0);
+define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -20,7 +23,9 @@ set_error_handler("exception_error_handler");
 function mostrar_errores($err)
 {
     foreach ($err as $e) { ?>
-        <h3>Error: <?= htmlentities($e) ?></h3><?php
+        <div class="alert alert-danger" role="alert">
+            Error: <?= htmlentities($e) ?>
+        </div><?php
     }
 }
 
@@ -107,23 +112,22 @@ function comprobar_existen($params)
 
 function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
-
     $dept_no = trim($dept_no);
 
-    if ($escenario === ESC_INSERTAR){
-        if($dept_no === '') {
+    if ($escenario === ESC_INSERTAR) {
+        if ($dept_no === "") {
             $error[] = "El número es obligatorio";
-        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))){
+        } elseif (!empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
             $error[] = "El departamento " . htmlentities($dept_no) .
                        " ya existe";
         }
     } elseif ($escenario === ESC_MODIFICAR) {
-        if($dept_no === '') {
+        if ($dept_no === "") {
             $error[] = "El número es obligatorio";
         } elseif ($dept_no !== $dept_no_viejo &&
                   !empty(buscar_por_dept_no(conectar_bd(), $dept_no))) {
-                    $error[] = "El departamento " . htmlentities($dept_no) .
-                               " ya existe";
+            $error[] = "El departamento " . htmlentities($dept_no) .
+                       " ya existe";
         }
     }
 
@@ -140,7 +144,7 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
     $dnombre = mb_strtoupper(trim($dnombre));
 
-    if ($escenario === ESC_INSERTAR && $dnombre === '') {
+    if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
     }
 
@@ -149,12 +153,14 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
-function comprobar_loc(&$loc, &$error, $escenario = ESC_CONSULTA)
+function comprobar_loc(&$loc, array &$error, $escenario = ESC_CONSULTA)
 {
-    if ($escenario === ESC_INSERTAR && $loc === '') {
-        $error[] = "El nombre de la localidad es obligatorio";
-    }
     $loc = mb_strtoupper(trim($loc));
+
+    if ($escenario === ESC_INSERTAR && $loc === "") {
+        $error[] = "La localidad es obligatoria";
+    }
+
     if (mb_strlen($loc) > 100) {
         $error[] = "La localidad no puede tener más de 100 caracteres";
     }
@@ -168,6 +174,7 @@ function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
         $orden = $pdo->prepare("select * from localidades where id = :localidad_id");
         $orden->execute([':localidad_id' => $localidad_id]);
         $result = $orden->fetchAll();
+
         if (empty($result)) {
             $error[] = "No existe la localidad indicada";
         }
@@ -186,7 +193,7 @@ function comprobar_si_vacio(array $result, array &$error)
 function comprobar_si_hay_uno(array $params, array &$error)
 {
     foreach ($params as $p) {
-        if ($p !== "") {
+        if ($p !== null) {
             return;
         }
     }
@@ -197,8 +204,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'alumno',
-        '4904321weB'
+        'ricardo',
+        'ricardo'
     );
 }
 
@@ -207,46 +214,11 @@ function buscar_por_dept_no(PDO $pdo, string $dept_no): array
     return buscar_por_dept_no_y_dnombre($pdo, $dept_no, "");
 }
 
-/**
- * Busca en la BD por dept_no y dnombre
- * @param  PDO    $pdo     Objeto para conexión a la BD
- * @param  string $dept_no Parámetro de búsqueda en la BD
- * @param  string $dnombre Parámetro de búsqueda en la BD
- * @return array           Resultado de la consulta
- */
 function buscar_por_dept_no_y_dnombre(
     PDO $pdo,
     string $dept_no,
     string $dnombre
 ): array {
-    $sql = "select * from depart where true";
-    $params = [];
-    if ($dept_no !== "") {
-        $sql .= " and dept_no = :dept_no";
-        $params[':dept_no'] = $dept_no;
-    }
-    if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
-        $params[':dnombre'] = "%$dnombre%";
-    }
-    $orden = $pdo->prepare($sql);
-    $orden->execute($params);
-    return $orden->fetchAll();
-}
-
-/**
- * Buscar en la tabla depart
- * @param  PDO    $pdo     Objeto para conexión con BD
- * @param  string $dept_no Parámetro para la BD
- * @param  string $dnombre Parámetro para la BD
- * @param  string $loc     Parámetro para la BD
- * @return array           Devuelve el resultado de la consulta
- */
-function buscar_en_depart(PDO $pdo,
-    string $dept_no,
-    string $dnombre,
-    string $localidad_id): array
-{
     $sql = "select * from depart_v where true";
     $params = [];
     if ($dept_no !== "") {
@@ -254,37 +226,122 @@ function buscar_en_depart(PDO $pdo,
         $params[':dept_no'] = $dept_no;
     }
     if ($dnombre !== "") {
-        $sql .= " and dnombre like :dnombre";
+        $sql .= " and dnombre ilike :dnombre";
         $params[':dnombre'] = "%$dnombre%";
-    }
-    if ($localidad_id !== "") {
-        $sql .= " and localidad_id = :localidad_id";
-        $params[':localidad_id'] = "$localidad_id";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
     return $orden->fetchAll();
 }
 
-function buscar_por_loc(PDO $pdo, $loc)
+function buscar_por_dept_no_dnombre_localidad_id(
+    PDO $pdo,
+    string $dept_no,
+    string $dnombre,
+    string $localidad_id = null
+): array {
+    $sql = "select * from depart_v where true";
+    $params = [];
+    if ($dept_no !== "") {
+        $sql .= " and dept_no = :dept_no";
+        $params[':dept_no'] = $dept_no;
+    }
+    if ($dnombre !== "") {
+        $sql .= " and dnombre ilike :dnombre";
+        $params[':dnombre'] = "%$dnombre%";
+    }
+    if ($localidad_id !== "" && $localidad_id !== null) {
+        $sql .= " and localidad_id = :localidad_id";
+        $params[':localidad_id'] = $localidad_id;
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_por_loc(PDO $pdo, string $loc = null): array
 {
     $sql = "select * from localidades where true";
     $params = [];
 
-    if ($loc !== "") {
-        $sql .= " and loc = :loc";
-        $params[':loc'] = "$loc";
+    if ($loc !== "" && $loc !== null) {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
     return $orden->fetchAll();
 }
 
-function buscar_por_localidad_id(PDO $pdo, $localidad_id)
+function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
 {
-    $orden = $pdo->prepare("select * from localidades where id = :localidad_id");
+    $orden = $pdo->prepare("select *
+                              from localidades
+                             where id = :localidad_id");
     $orden->execute([':localidad_id' => $localidad_id]);
     return $orden->fetch();
+}
+
+/**
+ * Dibuja la tabla con el resultado de la consulta
+ * @param  array  $result Matriz de filas x columnas con el resultado
+ */
+function dibujar_tabla(array $result)
+{ ?>
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <table class="table">
+                <thead>
+                    <th>Número</th>
+                    <th>Nombre</th>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $dept_no = htmlentities($fila['dept_no']); ?>
+                        <tr>
+                            <td><?= $dept_no ?></td>
+                            <td><?= htmlentities($fila['dnombre']) ?></td>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td>
+                                <a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
+                            </td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
+}
+
+function dibujar_tabla_localidades(array $result)
+{ ?>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <table class="table">
+                <thead>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $id = htmlentities($fila['id']); ?>
+                        <tr>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td>
+                                <a href="borrar.php?localidad_id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?localidad_id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
+                            </td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
 }
 
 function obtener_localidades(PDO $pdo): array
@@ -296,64 +353,45 @@ function obtener_localidades(PDO $pdo): array
 
 function lista_localidades(array $localidades, $localidad_id = null)
 { ?>
-    <select id="localidad_id" name="localidad_id">
+    <select name="localidad_id" id="localidad_id" class="form-control">
         <option value=""></option><?php
-        foreach($localidades as $loc) { ?>
-            <option value="<?= htmlentities($loc['id']) ?>"
-            <?= ($loc['id'] == $localidad_id? "selected='selected'" : "") ?>>
+        foreach ($localidades as $loc) { ?>
+            <option value="<?= htmlentities($loc['id']) ?>" <?=
+                ($loc['id'] == $localidad_id) ? "selected" : "" ?> >
                 <?= htmlentities($loc['loc']) ?>
             </option><?php
-        }
-        ?>
-    </select><br/><?php
+        } ?>
+    </select><?php
 }
 
-/**
- * Dibuja la tabla con los resultados de la consulta
- * @param  array  $result Resultado de la consulta a la BD
- */
-function dibujar_tabla(array $result)
+function menu($contexto = null)
 { ?>
-    <table border="1">
-        <thead>
-            <th>Número</th>
-            <th>Nombre</th>
-            <th>Localidad</th>
-            <th>Opciones</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) {?>
-                <tr>
-                    <td><?= htmlentities($fila['dept_no']) ?></td>
-                    <td><?= htmlentities($fila['dnombre']) ?></td>
-                    <td><?= htmlentities($fila['loc']) ?></td>
-                    <td>
-                        <a href="borrar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Borrar</a>
-                        <a href="modificar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Modificar</a>
-                    </td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
-}
-
-function dibujar_tabla_localidades(array $result)
-{ ?>
-    <table border="1">
-        <thead>
-            <th>Localidad</th>
-            <th>Operaciones</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) {?>
-                <tr>
-                    <td><?= htmlentities($fila['loc']) ?></td>
-                    <td>
-                        <a href="borrar.php?localidad_id=<?= htmlentities($fila['id']) ?>">Borrar</a>
-                        <a href="modificar.php?localidad_id=<?= htmlentities($fila['id']) ?>">Modificar</a>
-                    </td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/bd/">Menú principal</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li <?= ($contexto === CTX_DEPART) ? 'class="active"' : '' ?> >
+                        <a href="/bd/depart">Departamentos</a>
+                    </li>
+                    <li <?= ($contexto === CTX_LOCALIDADES) ? 'class="active"' : '' ?> >
+                        <a href="/bd/localidades">Localidades</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li <?= ($contexto === CTX_LOGIN) ? 'class="active"' : '' ?>>
+                        <a href="/bd/comunes/login.php">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav><?php
 }

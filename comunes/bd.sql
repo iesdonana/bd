@@ -1,12 +1,12 @@
 drop table if exists localidades cascade;
 
 create table localidades (
-        id        bigserial    constraint pk_localidades primary key,
-        loc varchar(100) not null
+    id        bigserial constraint pk_localidades primary key,
+    loc       varchar(100) not null
 );
 
 insert into localidades (loc)
-    values ('SANLUCAR'),
+    values ('SANLÚCAR'),
            ('JEREZ'),
            ('TREBUJENA'),
            ('CHIPIONA');
@@ -23,11 +23,20 @@ create table depart (
 
 insert into depart (dept_no, dnombre, localidad_id)
     values (10, 'CONTABILIDAD', 1),
-           (20, 'INVESTIGACION', 2),
+           (20, 'INVESTIGACIÓN', 2),
            (30, 'VENTAS', 3),
-           (40, 'PRODUCCION', 4);
+           (40, 'PRODUCCIÓN', 4);
 
 drop view if exists depart_v cascade;
+
 create view depart_v as
     select *
-    from depart d join localidades l on d.localidad_id = l.id;
+    from depart d left join localidades l on d.localidad_id = l.id;
+
+drop table if exists usuarios cascade;
+
+create table usuarios (
+    id     bigserial   constraint pk_usuarios primary key,
+    nombre varchar(20) not null constraint uq_usuarios_nombre unique,
+    pass   
+);

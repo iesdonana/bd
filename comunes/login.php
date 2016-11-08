@@ -2,54 +2,43 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Bases de datos</title>
+        <title>Login</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
     <body><?php
-        require '../comunes/auxiliar.php';
+        require "auxiliar.php";
 
-        menu(CTX_LOCALIDADES);
+        menu(CTX_LOGIN);
 
-        $pdo = conectar_bd();
-
-        $loc = filter_input(INPUT_GET, "loc"); ?>
+        $login = filter_input(INPUT_POST, "login");
+        $pass  = filter_input(INPUT_POST, "pass"); ?>
 
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-2 col-md-8">
+                <div class="col-md-offset-4 col-md-4">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Consulta de localidades</div>
+                        <div class="panel-heading">Login</div>
                         <div class="panel-body">
-                            <form action="" method="get">
+                            <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="loc">Localidad</label>
-                                    <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" class="form-control" />
+                                    <label for="login">Login *</label>
+                                    <input type="text" id="login" name="login" value="<?= htmlentities($login) ?>" class="form-control" />
                                 </div>
-                                <button type="submit" class="btn btn-default">Buscar</button>
-                                <button type="reset" class="btn">Limpiar</button>
-                                <a href="insertar.php" class="btn btn-warning" role="button">Insertar</a>
+                                <div class="form-group">
+                                    <label for="pass">Password *</label>
+                                    <input type="password" id="pass" name="pass" class="form-control" />
+                                </div>
+                                <button type="submit" class="btn btn-default">Login</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </div><?php
-        try {
-            $error = [];
-            comprobar_loc($loc, $error);
-            comprobar_errores($error);
-            $result = buscar_por_loc($pdo, $loc);
-            comprobar_si_vacio($result, $error);
-            comprobar_errores($error);
-            dibujar_tabla_localidades($result);
-        } catch (PDOException $e) { ?>
-            <h3>Error de conexión a la base de datos</h3><?php
-        } catch (Exception $e) {
-            mostrar_errores($error);
-        } ?>
+        </div>
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <!-- Latest compiled and minified JavaScript -->
