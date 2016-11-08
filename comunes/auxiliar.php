@@ -374,5 +374,6 @@ function menu($contexto = null)
         <li><a href="/bd/depart">Departamentos</a></li>
         <li><a href="/bd/localidades">Localidades</a></li>
     </ul>
+    <a href="/bd/comunes/login.php">Login</a>
     <hr /><?php
 }
