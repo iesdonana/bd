@@ -11,8 +11,7 @@
             $pdo = conectar_bd();
             $localidades = obtener_localidades($pdo);
 
-            $dept_no = filter_input(INPUT_GET, "dept_no");
-            $dnombre = filter_input(INPUT_GET, "dnombre");
+
             $loc = filter_input(INPUT_GET, "loc");?>
 
         <form action="" method="get">
