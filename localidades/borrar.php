@@ -12,35 +12,35 @@
         </style>
     </head>
     <body> <?php
-        require "auxiliar.php";
-        $dept_no = filter_input(INPUT_POST, "dept_no");
+        require "../comunes/auxiliar.php";
+        $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
-        if ($dept_no !== null) {
+        if ($localidad_id !== null) {
             // hacer borrado
             $pdo = conectar_bd();
-            $orden = $pdo->prepare("delete from depart where dept_no = :dept_no");
-            $orden->execute([':dept_no' => $dept_no]);
-            header("Location: bd.php");
+            $orden = $pdo->prepare("delete from localidades where id = :localidad_id");
+            $orden->execute([':localidad_id' => $localidad_id]);
+            header("Location: index.php");
         }
 
-        $dept_no = filter_input(INPUT_GET, "dept_no");
+        $localidad_id = filter_input(INPUT_GET, "localidad_id");
 
-        if ($dept_no === null) {
-            header("Location: bd.php");
+        if ($localidad_id === null) {
+            header("Location: index.php");
         }
 
-        $dept_no = trim($dept_no);
+        $localidad_id = trim($localidad_id);
         $pdo = conectar_bd();
 
-        if (empty(buscar_por_dept_no($pdo, $dept_no))) { ?>
-            <h3>Error el departamento <?= htmlentities($dept_no) ?> no existe</h3>
+        if (empty(buscar_por_localidad_id($pdo, $localidad_id))) { ?>
+            <h3>Error la localidad <?= htmlentities($localidad_id) ?> no existe</h3>
             <a href="bd.php" class="btn btn-warning" role="button">Volver</a> <?php
         } else {?>
-            <h3>¿Seguro que quiere borrar el departamento <?= htmlentities($dept_no) ?>?</h3>
+            <h3>¿Seguro que quiere borrar la localidad <?= htmlentities($localidad_id) ?>?</h3>
             <form action="" method="post">
-                <input type="hidden" name="dept_no" value="<?= htmlentities($dept_no) ?>" />
+                <input type="hidden" name="localidad_id" value="<?= htmlentities($localidad_id) ?>" />
                 <button type="submit" class="btn btn-default">Sí</button>
-                <a href="bd.php" class="btn btn-warning" role="button">No</a>
+                <a href="index.php" class="btn btn-warning" role="button">No</a>
             </form> <?php
         } ?>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

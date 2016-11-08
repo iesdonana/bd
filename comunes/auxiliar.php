@@ -54,9 +54,6 @@ function comprobar_existen($params)
  */
 function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, $dept_no_viejo = null)
 {
-    if ($dept_no === null) {
-        throw new Exception;
-    }
 
     $dept_no = trim($dept_no);
 
@@ -90,9 +87,6 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
  */
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
 
     $dnombre = strtoupper(trim($dnombre));
 
@@ -110,6 +104,15 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
  * @param  string $loc     La localidad del departamento
  * @param  array  $error   El array que contiene los errores
  */
+function comprobar_loc(&$loc, array &$error)
+{
+    $loc = strtoupper(trim($loc));
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad no puede tener más de 50 caracteres";
+    }
+}
+
 function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
 {
     $localidad_id = trim($localidad_id);
@@ -190,6 +193,28 @@ function buscar_por_dept_no_dnombre_y_localidad_id(
     return $orden->fetchAll();
 }
 
+function buscar_por_loc(PDO $pdo, string $loc): array
+{
+    $sql = "select * from localidades where true";
+    $params = [];
+
+    if ($loc !== "" && $loc !== null) {
+        $sql .= " and loc ilike :loc";
+        $params[':loc'] = "%$loc%";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
+{
+    $orden = $pdo->prepare("select * from localidades
+                                where id = :localidad_id");
+    $orden->execute([':localidad_id' => $localidad_id]);
+    return $orden->fetch();
+}
+
 /**
  * Muestra por pantalla el resultado de la tabla
  * @param  array  $result El array de los resultados de la búsqueda
@@ -212,6 +237,31 @@ function dibujar_tabla(array $result)
                     <td><?= htmlentities($fila['loc']) ?></td>
                     <td><a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
                         <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
+                </tr><?php
+            } ?>
+        </tbody>
+    </table><?php
+}
+
+/**
+ * Muestra por pantalla el resultado de la tabla de localidades
+ * @param  array  $result El array de los resultados de la búsqueda
+ */
+function dibujar_tabla_loc(array $result)
+{ ?>
+    <table class="table">
+        <thead>
+            <th>Localidad</th>
+            <th>Operaciones</th>
+        </thead>
+        <tbody><?php
+            foreach ($result as $fila) {
+                $id = htmlentities($fila['id']) ?>
+                <tr>
+                    <td><?= htmlentities($fila['loc']) ?></td>
+                    <td><a href="borrar.php?localidad_id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                        <a href="modificar.php?localidad_id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
                         <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
                 </tr><?php
             } ?>
