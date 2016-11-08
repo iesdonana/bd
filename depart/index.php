@@ -5,7 +5,7 @@
         <title>Bases de datos</title>
     </head>
     <body><?php
-        require 'auxiliar.php';
+        require '../comunes/auxiliar.php';
 
 
         $pdo = conectar_bd();

@@ -138,10 +138,6 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
 
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
-    if ($dnombre === null) {
-        throw new Exception;
-    }
-
     $dnombre = mb_strtoupper(trim($dnombre));
 
     if ($escenario === ESC_INSERTAR && $dnombre === '') {
@@ -150,6 +146,17 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 
     if (mb_strlen($dnombre) > 20) {
         $error[] = "El nombre del departamento no puede tener más de 20 caracteres";
+    }
+}
+
+function comprobar_loc(&$loc, &$error, $escenario = ESC_CONSULTA)
+{
+    if ($escenario === ESC_INSERTAR && $loc === '') {
+        $error[] = "El nombre de la localidad es obligatorio";
+    }
+    $loc = mb_strtoupper(trim($loc));
+    if (mb_strlen($loc) > 100) {
+        $error[] = "La localidad no puede tener más de 100 caracteres";
     }
 }
 
@@ -164,6 +171,8 @@ function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
         if (empty($result)) {
             $error[] = "No existe la localidad indicada";
         }
+    } else {
+        $localidad_id = null;
     }
 }
 
@@ -257,6 +266,27 @@ function buscar_en_depart(PDO $pdo,
     return $orden->fetchAll();
 }
 
+function buscar_por_loc(PDO $pdo, $loc)
+{
+    $sql = "select * from localidades where true";
+    $params = [];
+
+    if ($loc !== "") {
+        $sql .= " and loc = :loc";
+        $params[':loc'] = "$loc";
+    }
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
+}
+
+function buscar_por_localidad_id(PDO $pdo, $localidad_id)
+{
+    $orden = $pdo->prepare("select * from localidades where id = :localidad_id");
+    $orden->execute([':localidad_id' => $localidad_id]);
+    return $orden->fetch();
+}
+
 function obtener_localidades(PDO $pdo): array
 {
     $orden = $pdo->prepare("select * from localidades");
@@ -300,6 +330,27 @@ function dibujar_tabla(array $result)
                     <td>
                         <a href="borrar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Borrar</a>
                         <a href="modificar.php?dept_no=<?= htmlentities($fila['dept_no']) ?>">Modificar</a>
+                    </td>
+                </tr><?php
+            } ?>
+        </tbody>
+    </table><?php
+}
+
+function dibujar_tabla_localidades(array $result)
+{ ?>
+    <table border="1">
+        <thead>
+            <th>Localidad</th>
+            <th>Operaciones</th>
+        </thead>
+        <tbody><?php
+            foreach ($result as $fila) {?>
+                <tr>
+                    <td><?= htmlentities($fila['loc']) ?></td>
+                    <td>
+                        <a href="borrar.php?localidad_id=<?= htmlentities($fila['id']) ?>">Borrar</a>
+                        <a href="modificar.php?localidad_id=<?= htmlentities($fila['id']) ?>">Modificar</a>
                     </td>
                 </tr><?php
             } ?>
