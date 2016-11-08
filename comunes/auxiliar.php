@@ -225,27 +225,31 @@ function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
  */
 function dibujar_tabla(array $result)
 { ?>
-    <table class="table">
-        <thead>
-            <th>Número</th>
-            <th>Nombre</th>
-            <th>Localidad</th>
-            <th>Operaciones</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) {
-                $dept_no = htmlentities($fila['dept_no']) ?>
-                <tr>
-                    <td><?= $dept_no ?></td>
-                    <td><?= htmlentities($fila['dnombre']) ?></td>
-                    <td><?= htmlentities($fila['loc']) ?></td>
-                    <td><a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
-                        <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
-                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <table class="table">
+                <thead>
+                    <th>Número</th>
+                    <th>Nombre</th>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $dept_no = htmlentities($fila['dept_no']) ?>
+                        <tr>
+                            <td><?= $dept_no ?></td>
+                            <td><?= htmlentities($fila['dnombre']) ?></td>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td><a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
 }
 
 /**
@@ -254,23 +258,27 @@ function dibujar_tabla(array $result)
  */
 function dibujar_tabla_loc(array $result)
 { ?>
-    <table class="table">
-        <thead>
-            <th>Localidad</th>
-            <th>Operaciones</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) {
-                $id = htmlentities($fila['id']) ?>
-                <tr>
-                    <td><?= htmlentities($fila['loc']) ?></td>
-                    <td><a href="borrar.php?localidad_id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
-                        <a href="modificar.php?localidad_id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
-                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <table class="table">
+                <thead>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $id = htmlentities($fila['id']) ?>
+                        <tr>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td><a href="borrar.php?localidad_id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?localidad_id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a></td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
 }
 
 function obtener_localidades(PDO $pdo): array
@@ -290,4 +298,30 @@ function lista_localidades(array $localidades, $localidad_id = null)
             > <?= htmlentities($loc['loc']) ?> </option><?php
         } ?>
     </select> <?php
+}
+
+
+function menu($contexto = null)
+{ ?>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/iesdonana/bd/index.php">Menú principal</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class=<?= ($contexto === "depart") ? "active" : "" ?>><a href="/iesdonana/bd/depart">Departamentos</a></li>
+            <li class=<?= ($contexto === "localidades") ? "active" : "" ?>><a href="/iesdonana/bd/localidades">Localidades</a></li>
+          </div>  <!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+  </nav> <?php
 }
