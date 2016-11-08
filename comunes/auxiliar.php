@@ -88,7 +88,7 @@ function comprobar_dept_no(&$dept_no, array &$error, $escenario = ESC_CONSULTA, 
 function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
 {
 
-    $dnombre = strtoupper(trim($dnombre));
+    $dnombre = mb_strtoupper(trim($dnombre));
 
     if ($escenario === ESC_INSERTAR && $dnombre === "") {
         $error[] = "El nombre es obligatorio";
@@ -106,7 +106,7 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
  */
 function comprobar_loc(&$loc, array &$error, $escenario = ESC_CONSULTA)
 {
-    $loc = strtoupper(trim($loc));
+    $loc = mb_strtoupper(trim($loc));
 
     if ($escenario == ESC_INSERTAR && $loc === "") {
         $error[] = "El nombre es obligatorio";
