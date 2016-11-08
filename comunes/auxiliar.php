@@ -5,6 +5,7 @@ define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
 define("CTX_DEPART", 0);
 define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -383,6 +384,11 @@ function menu($contexto = null)
                     </li>
                     <li <?= ($contexto === CTX_LOCALIDADES) ? 'class="active"' : '' ?> >
                         <a href="/bd/localidades">Localidades</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li <?= ($contexto === CTX_LOGIN) ? 'class="active"' : '' ?>>
+                        <a href="/bd/comunes/login.php">Login</a>
                     </li>
                 </ul>
             </div>
