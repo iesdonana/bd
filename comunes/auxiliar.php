@@ -170,12 +170,16 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
-function comprobar_loc(&$loc, array &$error)
+function comprobar_loc(&$loc, array &$error, $escenario = ESC_CONSULTA)
 {
     $loc = strtoupper(trim($loc));
 
-    if (mb_strlen($loc) > 50) {
-        $error[] = "La localidad no puede tener más de 50 caracteres";
+    if ($escenario === ESC_INSERTAR && $loc === ""){
+        $error[] = "La localidad es obligatoria";
+    }
+
+    if (mb_strlen($loc) > 100) {
+        $error[] = "La localidad no puede tener más de 100 caracteres";
     }
 }
 
