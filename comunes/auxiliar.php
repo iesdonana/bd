@@ -104,12 +104,16 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
  * @param  string $loc     La localidad del departamento
  * @param  array  $error   El array que contiene los errores
  */
-function comprobar_loc(&$loc, array &$error)
+function comprobar_loc(&$loc, array &$error, $escenario = ESC_CONSULTA)
 {
     $loc = strtoupper(trim($loc));
 
-    if (mb_strlen($loc) > 50) {
-        $error[] = "La localidad no puede tener más de 50 caracteres";
+    if ($escenario == ESC_INSERTAR && $loc === "") {
+        $error[] = "El nombre es obligatorio";
+    }
+
+    if (mb_strlen($loc) > 100) {
+        $error[] = "La localidad no puede tener más de 100 caracteres";
     }
 }
 
