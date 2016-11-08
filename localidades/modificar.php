@@ -13,6 +13,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu(CTX_LOCALIDADES);
+
         $pdo = conectar_bd();
         $localidad_id = filter_input(INPUT_GET, "localidad_id");
 
@@ -47,15 +49,26 @@
                 mostrar_errores($error);
             }
         }?>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Consulta de localidades</div>
+                        <div class="panel-body">
+                            <form action="modificar.php" method="post">
+                                <input type="hidden" name="localidad_id" value="<?= htmlentities($localidad_id) ?>">
+                                <label for="loc">Localidad: *</label>
+                                <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" class="form-control"/><br/>
+                                <input type="submit" class="btn btn-default" value="Modificar" />
+                                <a href="index.php" class="btn btn-warning" role="button">Cancelar</a>
+                            </form>
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <form action="modificar.php" method="post">
-            <input type="hidden" name="localidad_id" value="<?= htmlentities($localidad_id) ?>">
-            <label for="loc">Localidad: *</label>
-            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
-            <input type="submit" value="Modificar" />
-            <a href="index.php" role="button">Cancelar</a>
-        </form>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

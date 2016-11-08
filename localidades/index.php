@@ -12,7 +12,7 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
-        menu('localidades');
+        menu(CTX_LOCALIDADES);
 
         try {
             $pdo = conectar_bd();

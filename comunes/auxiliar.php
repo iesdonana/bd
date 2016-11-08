@@ -3,7 +3,9 @@
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
-define("CTX_LOGIN", 3);
+define("CTX_DEPART", 0);
+define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -411,10 +413,10 @@ function menu($contexto = null)
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li <?= ($contexto === "depart") ? 'class="active"' : ""?>>
+            <li <?= ($contexto === CTX_DEPART) ? 'class="active"' : ""?>>
                 <a href="/bd/depart">Departamentos</a>
             </li>
-            <li <?= ($contexto === "localidades") ? 'class="active"' : ""?>>
+            <li <?= ($contexto === CTX_LOCALIDADES) ? 'class="active"' : ""?>>
                 <a href="/bd/localidades">Localidades</a>
             </li>
           </ul>

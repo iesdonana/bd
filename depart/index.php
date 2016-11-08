@@ -12,7 +12,7 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
-        menu('depart');
+        menu(CTX_DEPART);
 
         try {
             $pdo = conectar_bd();
@@ -23,26 +23,26 @@
             $localidad_id = filter_input(INPUT_GET, "localidad_id");?>
 
             <div class="container">
-                    <div class="row">
-                        <div class="col-md-offset-2 col-md-8">
-                            <div class="panel panel-info">
-                                <div class="panel-heading">Consulta de localidades</div>
-                                <div class="panel-body">
-                                    <form action="" method="get">
-                                        <label for="dept_no">Número de departamento:</label>
-                                        <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" /><br/>
-                                        <label for="dnombre">Nombre de departamento:</label>
-                                        <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" class="form-control"/><br/>
-                                        <label for="localidad_id">Localidad:</label><?php
-                                        lista_localidades($localidades, $localidad_id)?><br/>
-                                        <input type="submit" value="Buscar"  class="btn btn-default"/>
-                                        <a href="insertar.php" role="button" class="btn btn-warning">Insertar</a>
-                                    </form>
-                                </div>
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">Consulta de localidades</div>
+                            <div class="panel-body">
+                                <form action="" method="get">
+                                    <label for="dept_no">Número de departamento:</label>
+                                    <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" /><br/>
+                                    <label for="dnombre">Nombre de departamento:</label>
+                                    <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" class="form-control"/><br/>
+                                    <label for="localidad_id">Localidad:</label><?php
+                                    lista_localidades($localidades, $localidad_id)?><br/>
+                                    <input type="submit" value="Buscar"  class="btn btn-default"/>
+                                    <a href="insertar.php" role="button" class="btn btn-warning">Insertar</a>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </div><?php
+                </div>
+            </div><?php
             $error = [];
             comprobar_dept_no($dept_no, $error);
             comprobar_dnombre($dnombre, $error);

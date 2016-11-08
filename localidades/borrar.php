@@ -40,8 +40,8 @@
             <h3>¿Seguro que quiere borrar la localidad <?= htmlentities($localidad_id)?>?</h3>
             <form action="" method="post">
                 <input type="hidden" name="localidad_id" class="btn btn-default" value="<?= htmlentities($localidad_id) ?>" />
-                <button type="submit" name="si">Si</button>
-                <a href="index.php" role="button">No</a>
+                <button type="submit" class="btn btn-default" name="si">Si</button>
+                <a href="index.php" class="btn btn-warning" role="button">No</a>
             </form><?php
         }?>
 

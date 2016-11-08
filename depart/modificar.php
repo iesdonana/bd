@@ -3,9 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title>Modificar un departamento</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
     </head>
     <body><?php
         require '../comunes/auxiliar.php';
+
+        menu(CTX_DEPART);
 
         $pdo = conectar_bd();
         $localidades = obtener_localidades($pdo);
@@ -54,17 +61,32 @@
             }
         }?>
 
+        <div class="container">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-8">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">Modificar un departamento</div>
+                            <div class="panel-body">
+                                <form action="modificar.php" method="post">
+                                    <input type="hidden" name="dept_no_viejo" value="<?= htmlentities($dept_no)?>">
+                                    <label for="dept_no">Número de departamento: *</label>
+                                    <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control"/><br/>
+                                    <label for="dnombre">Nombre de departamento: *</label>
+                                    <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" class="form-control"/><br/>
+                                    <label for="loc">Localidad:</label><?php
+                                    lista_localidades($localidades, $localidad_id)?><br/>
+                                    <input type="submit" class="btn btn-default" value="Modificar" />
+                                    <a href="index.php" class="btn btn-warning" role="button">Cancelar</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <form action="modificar.php" method="post">
-            <input type="hidden" name="dept_no_viejo" value="<?= htmlentities($dept_no)?>">
-            <label for="dept_no">Número de departamento: *</label>
-            <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" /><br/>
-            <label for="dnombre">Nombre de departamento: *</label>
-            <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
-            <label for="loc">Localidad:</label><?php
-            lista_localidades($localidades, $localidad_id)?><br/>
-            <input type="submit" value="Modificar" />
-            <a href="index.php" role="button">Cancelar</a>
-        </form>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </body>
 </html>
