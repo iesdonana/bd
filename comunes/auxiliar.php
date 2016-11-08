@@ -150,6 +150,15 @@ function comprobar_dnombre(&$dnombre, array &$error, $escenario = ESC_CONSULTA)
     }
 }
 
+function comprobar_loc(&$loc, array &$error)
+{
+    $loc = strtoupper(trim($loc));
+
+    if (mb_strlen($loc) > 50) {
+        $error[] = "La localidad debe ser mayor de 50 caracteres.";
+    }
+}
+
 function comprobar_localidad_id(&$localidad_id, PDO $pdo, array &$error)
 {
     $localidad_id = trim($localidad_id);
@@ -191,6 +200,30 @@ function conectar_bd(): PDO
         'recetas',
         'recetas'
     );
+}
+
+function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
+{
+    $orden = $pdo->prepare("select *
+                              from localidades
+                             where localidad_id = :localidad_id");
+    $orden->execute(['localidad_id' => $localidad_id]);
+    return $orden->fetch();
+}
+
+function buscar_por_loc(PDO $pdo, string $loc = null): array
+{
+    $sql = "select * from localidades where true";
+    $params = [];
+
+    if ($loc !== "" && $loc !== null) {
+        $sql .= " and loc ilike :loc";
+        $params['loc'] = "%$loc%";
+    }
+
+    $orden = $pdo->prepare($sql);
+    $orden->execute($params);
+    return $orden->fetchAll();
 }
 
 function buscar_por_dept_no(PDO $pdo, string $dept_no): array
@@ -269,6 +302,29 @@ function lista_localidades(array $localidades, $localidad_id = null)
                 }
         } ?>
     </select><?php
+}
+
+function dibujar_tabla_localidades(array $result)
+{ ?>
+    <table class="table">
+        <thead>
+            <th>Localidad</th>
+            <th>Operaciones</th>
+        </thead>
+        <tbody><?php
+            foreach ($result as $fila) {
+                $id = htmlentities($fila['id']) ?>
+                <tr>
+                    <td><?= htmlentities($fila['loc']) ?></td>
+                    <td>
+                        <a href="borrar.php?id=<?= $id ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                        <a href="modificar.php?id=<?= $id ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
+                    </td>
+                </tr><?php
+            } ?>
+        </tbody>
+    </table><?php
 }
 
 /**

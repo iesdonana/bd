@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Insertar un nuevo departamento</title>
+        <title>Insertar una localidad</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
@@ -12,7 +12,7 @@
         </style>
     </head>
     <body><?php
-        require "auxiliar.php";
+        require "../comunes/auxiliar.php";
 
         $pdo = conectar_bd();
         $localidades = obtener_localidades($pdo);
