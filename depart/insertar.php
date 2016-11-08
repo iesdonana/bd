@@ -5,7 +5,7 @@
         <title>Insertar un departamento</title>
     </head>
     <body><?php
-        require "auxiliar.php";
+        require "../comunes/auxiliar.php";
 
         $pdo = conectar_bd();
         $localidades = obtener_localidades($pdo);
@@ -28,7 +28,7 @@
                 ':dnombre' => $dnombre,
                 ':localidad_id' => $localidad_id
             ]);
-            header("Location: bd.php");
+            header("Location: index.php");
         } catch (PDOException $e) { ?>
             <h3>Error de conexión a la base de datos</h3><?php
         } catch (Exception $e) {
@@ -45,7 +45,7 @@
             <?php lista_localidades($localidades) ?>
             <input type="submit" value="Insertar" />
             <input type="reset" value="Limpiar" />
-            <a href="bd.php">Cancelar</a>
+            <a href="index.php">Cancelar</a>
         </form>
     </body>
 </html>

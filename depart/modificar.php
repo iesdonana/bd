@@ -5,7 +5,7 @@
         <title>Modificar un departamento</title>
     </head>
     <body><?php
-        require "auxiliar.php";
+        require "../comunes/auxiliar.php";
 
         $dept_no = filter_input(INPUT_GET, "dept_no");
         $pdo = conectar_bd();
@@ -14,7 +14,7 @@
         if ($dept_no !== null) {
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)) {
-                header("Location: bd.php");
+                header("Location: index.php");
             }
             $result = $result[0];
             $dnombre = $result['dnombre'];
@@ -43,7 +43,7 @@
                     ':localidad_id' => $localidad_id,
                     ':dept_no_viejo' => $dept_no_viejo
                 ]);
-                header("Location: bd.php");
+                header("Location: index.php");
             } catch (PDOException $e) { ?>
                 <h3>Error de conexión a la base de datos</h3><?php
             } catch (Exception $e) {
@@ -60,7 +60,7 @@
             <?php lista_localidades($localidades, $localidad_id) ?>
             <input type="submit" value="Modificar" />
             <input type="reset" value="Limpiar" />
-            <a href="bd.php">Cancelar</a>
+            <a href="index.php">Cancelar</a>
         </form>
     </body>
 </html>
