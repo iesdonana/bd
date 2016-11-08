@@ -33,3 +33,11 @@ drop view if exists depart_v cascade;
 create view depart_v as
     select *
     from depart d left join localidades l on d.localidad_id = l.id;
+
+drop table usuarios if exists usuarios cascade;
+
+create table usuarios (
+        id bigserial constraint pk_usuarios primary key,
+        nombre varchar(20) not null constraint uq_usuarios_nombre unique,
+        pass 
+);
