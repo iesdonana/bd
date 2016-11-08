@@ -12,27 +12,18 @@
         </style>
     </head>
     <body><?php
-        require "auxiliar.php";
+        require "../comunes/auxiliar.php";
 
-        $dept_no = filter_input(INPUT_POST, "dept_no");
-        $dnombre = filter_input(INPUT_POST, "dnombre");
-        $loc     = filter_input(INPUT_POST, "loc");
+        $loc = filter_input(INPUT_POST, "loc");
 
         try {
             $error = [];
-            comprobar_existen([$dept_no, $dnombre, $loc]);
-            comprobar_dept_no($dept_no, $error, ESC_INSERTAR);
-            comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-            comprobar_loc($loc, $error);
+            comprobar_existen([$loc]);
+            comprobar_loc($loc, $error, ESC_INSERTAR);
             comprobar_errores($error);
             $pdo = conectar_bd();
-            $orden = $pdo->prepare("insert into depart (dept_no, dnombre, loc)
-                                    values (:dept_no, :dnombre, :loc)");
-            $orden->execute([
-                ':dept_no' => $dept_no,
-                ':dnombre' => $dnombre,
-                ':loc'     => $loc
-            ]);
+            $orden = $pdo->prepare("insert into localidades (loc) values (:loc)");
+            $orden->execute([':loc' => $loc]);
             header("Location: index.php");
         } catch (PDOException $e) { ?>
             <h3>Error de conexión a la base de datos</h3><?php
@@ -43,20 +34,12 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Insertar un departamento</div>
+                        <div class="panel-heading">Insertar una localidad</div>
                         <div class="panel-body">
                             <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="dept_no">Número *</label>
-                                    <input type="text" id="dept_no" name="dept_no" value="<?= htmlentities($dept_no) ?>" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="dnombre">Nombre *</label>
-                                    <input type="text" id="dnombre" name="dnombre"  value="<?= htmlentities($dnombre) ?>" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="loc">Localidad</label>
-                                    <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
+                                    <label for="loc">Localidad *</label>
+                                    <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-default">Insertar</button>
                                 <button type="reset" class="btn">Limpiar</button>
