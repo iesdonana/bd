@@ -321,7 +321,11 @@ function menu($contexto = null)
           <ul class="nav navbar-nav">
             <li class=<?= ($contexto === "depart") ? "active" : "" ?>><a href="/iesdonana/bd/depart">Departamentos</a></li>
             <li class=<?= ($contexto === "localidades") ? "active" : "" ?>><a href="/iesdonana/bd/localidades">Localidades</a></li>
-          </div>  <!-- /.navbar-collapse -->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class=<?= ($contexto === "login") ? "active" : "" ?>><a href="/iesdonana/bd/comunes/login.php">Login</a></li>
+          </ul>
+        </div>  <!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
   </nav> <?php
 }
