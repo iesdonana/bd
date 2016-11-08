@@ -15,7 +15,6 @@
         require '../comunes/auxiliar.php';
 
         $pdo = conectar_bd();
-        $localidades = obtener_localidades($pdo);
 
         $loc = filter_input(INPUT_POST, "loc");
 
