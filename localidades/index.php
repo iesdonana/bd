@@ -7,6 +7,8 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
+        menu();
+
         $pdo = conectar_bd();
 
         try {

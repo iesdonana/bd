@@ -7,6 +7,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu();
+
         $dept_no = filter_input(INPUT_POST, "dept_no");
 
         if ($dept_no !== null) {

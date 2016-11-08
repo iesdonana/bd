@@ -7,6 +7,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu();
+
         $pdo = conectar_bd();
         $localidades = obtener_localidades($pdo);
 
@@ -42,7 +44,7 @@
             <label for="dnombre">Nombre de departamento *:</label>
             <input type="text" id="dnombre" name="dnombre" value="<?= htmlentities($dnombre) ?>" /><br/>
             <label for="localidad_id">Localidad del departamento:</label>
-            <?php lista_localidades($localidades) ?>
+            <?php lista_localidades($localidades) ?><br />
             <input type="submit" value="Insertar" />
             <input type="reset" value="Limpiar" />
             <a href="index.php">Cancelar</a>

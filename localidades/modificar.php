@@ -7,6 +7,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu();
+
         $pdo = conectar_bd();
 
         $localidad_id = filter_input(INPUT_GET, "localidad_id");
@@ -44,7 +46,7 @@
         <form action="modificar.php" method="post">
             <input type="hidden" name="localidad_id" value="<?= htmlentities($localidad_id) ?>">
             <label for="loc">Localidad *:</label>
-            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>">
+            <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>"><br />
             <input type="submit" value="Modificar" />
             <input type="reset" value="Limpiar" />
             <a href="index.php">Cancelar</a>

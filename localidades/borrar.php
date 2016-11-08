@@ -7,6 +7,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu();
+
         $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
         if ($localidad_id !== null) {

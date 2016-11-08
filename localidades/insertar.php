@@ -7,6 +7,8 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        menu();
+
         $loc = filter_input(INPUT_POST, "loc");
 
         try {
@@ -30,7 +32,7 @@
      ?>
         <form action="" method="post">
             <label for="localidad_id">Localidad *:</label>
-            <input type="text" id="localidad_id" name="loc" value="<?= htmlentities($loc) ?>">
+            <input type="text" id="localidad_id" name="loc" value="<?= htmlentities($loc) ?>"><br />
             <input type="submit" value="Insertar" />
             <input type="reset" value="Limpiar" />
             <a href="index.php">Cancelar</a>

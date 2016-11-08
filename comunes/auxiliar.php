@@ -258,9 +258,9 @@ function buscar_por_loc(PDO $pdo, string $loc = null): array
     $sql = "select * from localidades where true";
     $params = [];
 
-    if ($loc !== ""&& $loc !== null) {
+    if ($loc !== "" && $loc !== null) {
         $sql .= " and loc ilike :loc";
-        $params[':loc'] = $loc;
+        $params[':loc'] = "%$loc%";
     }
     $orden = $pdo->prepare($sql);
     $orden->execute($params);
@@ -365,4 +365,14 @@ function lista_localidades(array $localidades, $localidad_id = null)
         }
      ?>
  </select><?php
+}
+
+function menu($contexto = null)
+{ ?>
+    <h1>Menu principal</h1>
+    <ul>
+        <li><a href="/bd/depart">Departamentos</a></li>
+        <li><a href="/bd/localidades">Localidades</a></li>
+    </ul>
+    <hr /><?php
 }
