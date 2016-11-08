@@ -30,7 +30,7 @@
                     ':localidad_id' => $localidad_id
             ]);
 
-            header("Location: bd.php");
+            header("Location: index.php");
         } catch (PDOException $e) { ?>
             <h3>Error de conexión a la base de datos</h3><?php
         } catch (Exception $e) {
@@ -45,7 +45,7 @@
             <label for="localidad_id">Localidad:</label><?php
             lista_localidades($localidades)?><br/>
             <input type="submit" value="Insertar" />
-            <a href="bd.php" role="button">Cancelar</a>
+            <a href="index.php" role="button">Cancelar</a>
         </form>
     </body>
 </html>

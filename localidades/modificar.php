@@ -15,7 +15,7 @@
         if ($dept_no !== null){
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)){
-                header("Location: bd.php");
+                header("Location: index.php");
             }
             $result           = $result[0];
             $dnombre          = $result['dnombre'];
@@ -46,7 +46,7 @@
                         ':dept_no_viejo' => $dept_no_viejo
                 ]);
 
-                header("Location: bd.php");
+                header("Location: index.php");
             } catch (PDOException $e) { ?>
                 <h3>Error de conexión a la base de datos</h3><?php
             } catch (Exception $e) {
@@ -64,7 +64,7 @@
             <label for="loc">Localidad:</label><?php
             lista_localidades($localidades, $localidad_id)?><br/>
             <input type="submit" value="Modificar" />
-            <a href="bd.php" role="button">Cancelar</a>
+            <a href="index.php" role="button">Cancelar</a>
         </form>
     </body>
 </html>

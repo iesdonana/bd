@@ -292,6 +292,17 @@ function buscar_por_loc(PDO $pdo, string $loc = null): array
     return $orden->fetchAll();
 }
 
+function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
+{
+    $sql = "select * from localidades
+            where id = :localidad_id";
+
+    $orden = $pdo->prepare($sql);
+    $orden->execute([':localidad_id' => $localidad_id]);
+    return $orden->fetch();
+    //En este caso haremos fetch, ya que solo devolveremos una fila.
+}
+
 function obtener_localidades(PDO $pdo): array
 {
     $orden = $pdo->prepare("select * from localidades");
@@ -344,8 +355,8 @@ function dibujar_tabla_localidades(array $result)
                 <tr>
                     <td><?= htmlentities($fila['loc']) ?></td>
                     <td>
-                        <a href="borrar.php?id=<?= $id ?>" role="button">Borrar</a>
-                        <a href="modificar.php?id=<?= $id ?>" role="button">Modificar</a>
+                        <a href="borrar.php?localidad_id=<?= $id ?>" role="button">Borrar</a>
+                        <a href="modificar.php?localidad_id=<?= $id ?>" role="button">Modificar</a>
                         <a href="ver.php" role="button">Ver</a>
 
                     </td>
