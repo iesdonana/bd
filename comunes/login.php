@@ -16,20 +16,17 @@
         $login = trim(filter_input(INPUT_POST, "login"));
         $pass = trim(filter_input(INPUT_POST, "pass"));
 
-        $pdo = conectar_bd();
-        $orden = $pdo->prepare("select * from usuarios where nombre = :login");
-        $orden->execute([':login' => $login]);
-        $result = $orden->fetch();
-
-        if (!empty($result)) {
-            if (password_verify($pass, $result['pass'])) {
-                setcookie('login', $login);
-            } else {
-
-            }
-        }
-
-        ?>
+        try {
+            $error=[];
+            comprobar_existen([$login,$pass]);
+            $pdo = conectar_bd();
+            comprobar_credenciales($pdo,$login,$pass,$error);
+            comprobar_errores($error);
+            setcookie('login', $login,0,'/');
+            header("Location: /bd/");
+            } catch(Exception $e) {
+                //nada
+            }?>
 
         <div class="container">
             <div class="row">
