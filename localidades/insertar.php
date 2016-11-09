@@ -11,6 +11,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         menu(CTX_LOCALIDADES);
 
         $loc = filter_input(INPUT_POST, "loc");
