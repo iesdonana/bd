@@ -373,15 +373,13 @@ function menu($contexto = null)
     <ul>
         <li><a href="/bd/depart">Departamentos</a></li>
         <li><a href="/bd/localidades">Localidades</a></li>
-    </ul>
-    <ul><?php
+    </ul><?php
         if (isset($_COOKIE['login'])) { ?>
-            <li><p><?= $_COOKIE['login'] ?></p></li>
-            <li><a href="/bd/comunes/logout.php">Logout</a></li><?php
+            <p><?= $_COOKIE['login'] ?></p>
+            <a href="/bd/comunes/logout.php">Logout</a><?php
         } else { ?>
-            <li><a href="/bd/comunes/login.php">Login</a></li><?php
+            <a href="/bd/comunes/login.php">Login</a><?php
         } ?>
-    </ul>
     <hr /><?php
 }
 
@@ -399,7 +397,7 @@ function comprobar_credenciales(PDO $pdo, $login, $pass, array &$error)
 function comprobar_logueado()
 {
     if (!usuario_logueado()) {
-        header("location: /bd/comunes/login.php");
+        header("Location: /bd/comunes/login.php");
     }
 }
 
