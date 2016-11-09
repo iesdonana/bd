@@ -11,6 +11,7 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
+        comprobar_logueado();
         menu(CTX_DEPART);
 
         $pdo = conectar_bd();
