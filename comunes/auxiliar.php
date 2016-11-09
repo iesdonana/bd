@@ -374,6 +374,36 @@ function menu($contexto = null)
         <li><a href="/bd/depart">Departamentos</a></li>
         <li><a href="/bd/localidades">Localidades</a></li>
     </ul>
-    <a href="/bd/comunes/login.php">Login</a>
+    <ul><?php
+        if (isset($_COOKIE['login'])) { ?>
+            <li><p><?= $_COOKIE['login'] ?></p></li>
+            <li><a href="/bd/comunes/logout.php">Logout</a></li><?php
+        } else { ?>
+            <li><a href="/bd/comunes/login.php">Login</a></li><?php
+        } ?>
+    </ul>
     <hr /><?php
+}
+
+function comprobar_credenciales(PDO $pdo, $login, $pass, array &$error)
+{
+    $orden = $pdo->prepare("select * from usuarios where nombre = :login");
+    $orden->execute([':login' => $login]);
+    $result = $orden->fetch();
+
+    if (empty($result) || !password_verify($pass, $result['pass'])) {
+        $error[] = "Credenciales incorrectas";
+    }
+}
+
+function comprobar_logueado()
+{
+    if (!usuario_logueado()) {
+        header("location: /bd/comunes/login.php");
+    }
+}
+
+function usuario_logueado(): bool
+{
+    return isset($_COOKIE['login']);
 }

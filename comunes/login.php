@@ -7,10 +7,28 @@
     <body><?php
         require "auxiliar.php";
 
+        if (usuario_logueado()) {
+            header("Location: /bd/");
+        }
         menu();
 
-        $login = filter_input(INPUT_POST,$login);
-        $pass = filter_input(INPUT_POST,$pass);
+        $login = filter_input(INPUT_POST,"login");
+        $pass = filter_input(INPUT_POST,"pass");
+
+        try {
+            $error = [];
+            comprobar_existen([$login, $pass]);
+            $login = trim($login);
+            $pass = trim($pass);
+            $pdo = conectar_bd();
+            comprobar_credenciales($pdo, $login, $pass, $error);
+            comprobar_errores($error);
+            setcookie('login', $login, 0, '/');
+            header("Location: /bd/");
+        } catch (Exception $e) {
+            mostrar_errores($error);
+        }
+
         ?>
 
         <form action="" method="post">
