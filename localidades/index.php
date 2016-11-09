@@ -12,6 +12,8 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
+        comprobar_logueado();
+
         menu("localidades");
 
         $pdo = conectar_bd();

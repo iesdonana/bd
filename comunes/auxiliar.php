@@ -351,3 +351,15 @@ function comprobar_credenciales(PDO $pdo, $user, $pass, array &$error)
         $error[] = "Credenciales incorrectas";
     }
 }
+
+function comprobar_logueado()
+{
+    if (!usuario_logueado()) {
+        header("Location: /iesdonana/bd/comunes/login.php");
+    }
+}
+
+function usuario_logueado(): bool
+{
+    return isset($_COOKIE['login']);
+}

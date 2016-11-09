@@ -11,6 +11,10 @@
     <body><?php
         require('auxiliar.php');
 
+        if (usuario_logueado()) {
+            header("Location: /iesdonana/bd/");
+        }
+
         menu("login");
 
         $user = filter_input(INPUT_POST, "user");
