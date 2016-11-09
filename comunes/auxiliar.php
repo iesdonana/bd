@@ -323,9 +323,31 @@ function menu($contexto = null)
             <li class=<?= ($contexto === "localidades") ? "active" : "" ?>><a href="/iesdonana/bd/localidades">Localidades</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class=<?= ($contexto === "login") ? "active" : "" ?>><a href="/iesdonana/bd/comunes/login.php">Login</a></li>
+              <?php
+                  if (isset($_COOKIE['login'])) { ?>
+                      <p class="navbar-text"><?= $_COOKIE['login'] ?></p>
+                      <li>
+                          <a href="/iesdonana/bd/comunes/logout.php">Logout</a>
+                      </li> <?php
+                  } else { ?>
+                      <li class=<?= ($contexto === "login") ? "active" : "" ?>>
+                          <a href="/iesdonana/bd/comunes/login.php">Login</a>
+                      </li> <?php
+                  } ?>
+
           </ul>
         </div>  <!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
   </nav> <?php
+}
+
+function comprobar_credenciales(PDO $pdo, $user, $pass, array &$error)
+{
+    $orden = $pdo->prepare("select * from usuarios where nombre = :user");
+    $orden->execute([':user' => $user]);
+    $result = $orden->fetch();
+
+    if (empty($result) || !password_verify($pass, $result['pass'])) {
+        $error[] = "Credenciales incorrectas";
+    }
 }

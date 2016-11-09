@@ -14,7 +14,21 @@
         menu("login");
 
         $user = filter_input(INPUT_POST, "user");
-        $pass = filter_input(INPUT_POST, "pass");?>
+        $pass = filter_input(INPUT_POST, "pass");
+
+        try {
+            $error = [];
+            comprobar_existen([$user, $pass]);
+            $user = trim($user);
+            $pass = trim($pass);
+            $pdo = conectar_bd();
+            comprobar_credenciales($pdo, $user, $pass, $error);
+            comprobar_errores($error);
+            setcookie('login', $user, 0, '/');
+            header("Location: /iesdonana/bd/");
+        } catch (Exception $e) {
+            mostrar_errores($error);
+        } ?>
 
         <div class="container">
             <div class="row">
