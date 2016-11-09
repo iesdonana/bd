@@ -53,7 +53,7 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Consulta de localidades</div>
+                        <div class="panel-heading">Modificar localidades</div>
                         <div class="panel-body">
                             <form action="modificar.php" method="post">
                                 <input type="hidden" name="localidad_id" value="<?= htmlentities($localidad_id) ?>">

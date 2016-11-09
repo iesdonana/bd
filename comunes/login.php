@@ -18,7 +18,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-offset-2 col-md-8">
+            <div class="col-md-offset-4 col-md-4">
                 <div class="panel panel-info">
                     <div class="panel-heading">Iniciar sesión</div>
                     <div class="panel-body">
@@ -29,6 +29,7 @@
                                 <label for="pass">Password *</label>
                                 <input type="password" name="pass" class="form-control">
                             </div>
+                            <input type="button" name="login" value="Login" class="btn btn-default">
                         </form>
                     </div>
                 </div>

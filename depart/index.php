@@ -36,6 +36,7 @@
                                     <label for="localidad_id">Localidad:</label><?php
                                     lista_localidades($localidades, $localidad_id)?><br/>
                                     <input type="submit" value="Buscar"  class="btn btn-default"/>
+                                    <button type="reset" class="btn">Limpiar</button>
                                     <a href="insertar.php" role="button" class="btn btn-warning">Insertar</a>
                                 </form>
                             </div>

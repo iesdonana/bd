@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-md-offset-2 col-md-8">
                         <div class="panel panel-info">
-                            <div class="panel-heading">Consulta de localidades</div>
+                            <div class="panel-heading">Insertar localidades</div>
                             <div class="panel-body">
                                 <form action="" method="post">
                                     <label for="loc">Localidad: *</label>
