@@ -12,6 +12,7 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
+        comprobar_logueado();
         $dept_no = filter_input(INPUT_POST, "dept_no");
 
         if ($dept_no !== null){

@@ -13,6 +13,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         $localidad_id = filter_input(INPUT_POST, "localidad_id");
 
         if ($localidad_id !== null){

@@ -13,6 +13,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         menu(CTX_LOCALIDADES);
 
         $pdo = conectar_bd();

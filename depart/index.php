@@ -12,6 +12,7 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
+        comprobar_logueado();
         menu(CTX_DEPART);
 
         try {

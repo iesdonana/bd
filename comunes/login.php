@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>Login</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
@@ -12,9 +12,29 @@
     <body><?php
     require 'auxiliar.php';
 
+    if (usuario_logueado()) {
+        header("Location: /bd/");
+    }
+
     menu(CTX_LOGIN);
+
     $login = filter_input(INPUT_POST, "login");
-    $pass = filter_input(INPUT_POST, "pass");?>
+    $pass = filter_input(INPUT_POST, "pass");
+
+
+    try{
+        $error = [];
+        comprobar_existen([$login, $pass]);
+        $login = trim($login);
+        $pass = trim($pass);
+        $pdo = conectar_bd();
+        comprobar_credenciales($pdo, $login, $pass, $error);
+        comprobar_errores($error);
+        setcookie('login', $login, 0, '/');
+        header("Location: /bd/");
+    } catch (Exception $e) {
+        mostrar_errores($error);
+    }?>
 
     <div class="container">
         <div class="row">
@@ -27,9 +47,9 @@
                                 <label for="login">Login *</label>
                                 <input type="text" id="login" name="login" value="<?= htmlentities($login) ?>" class="form-control"><br/>
                                 <label for="pass">Password *</label>
-                                <input type="password" name="pass" class="form-control">
+                                <input type="password" id="pass" name="pass" class="form-control">
                             </div>
-                            <input type="button" name="login" value="Login" class="btn btn-default">
+                            <button type="submit" value="Login" class="btn btn-default">Login</button>
                         </form>
                     </div>
                 </div>
