@@ -7,6 +7,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         menu();
 
         $pdo = conectar_bd();

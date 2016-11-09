@@ -7,6 +7,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         menu();
 
         $dept_no = filter_input(INPUT_POST, "dept_no");

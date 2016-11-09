@@ -7,6 +7,7 @@
     <body><?php
         require "../comunes/auxiliar.php";
 
+        comprobar_logueado();
         menu();
 
         $loc = filter_input(INPUT_POST, "loc");
