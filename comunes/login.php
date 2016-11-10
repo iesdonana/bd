@@ -9,43 +9,47 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
     <body><?php
-        require('auxiliar.php');
+        require "auxiliar.php";
 
-        menu("login");
+        if (usuario_logueado()) {
+            header("Location: /baseDatos/bd/");
+        }
 
-        $login = trim(filter_input(INPUT_POST, "login"));
-        $pass = trim(filter_input(INPUT_POST, "pass"));
+        menu(CTX_LOGIN);
+
+        $login = filter_input(INPUT_POST, "login");
+        $pass  = filter_input(INPUT_POST, "pass");
 
         try {
-            $error=[];
-            comprobar_existen([$login,$pass]);
+            $error = [];
+            comprobar_existen([$login, $pass]);
+            $login = trim($login);
+            $pass = trim($pass);
             $pdo = conectar_bd();
-            comprobar_credenciales($pdo,$login,$pass,$error);
+            comprobar_credenciales($pdo, $login, $pass, $error);
             comprobar_errores($error);
-            setcookie('login', $login,0,'/');
-            header("Location: /bd/");
-            } catch(Exception $e) {
-                //nada
-            }?>
+            setcookie('login', $login, 0, '/');
+            header("Location: /baseDatos/bd/");
+        } catch (Exception $e) {
+            mostrar_errores($error);
+        } ?>
 
         <div class="container">
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="panel panel-info">
-                        <div class="panel-heading">Identificación de usuario</div>
+                        <div class="panel-heading">Login</div>
                         <div class="panel-body">
-                            <form action="" method="post"> <!-- El action vacio indica que el submit enviara el formulario a si mismo -->
+                            <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="login">Usuario</label>
+                                    <label for="login">Login *</label>
                                     <input type="text" id="login" name="login" value="<?= htmlentities($login) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass">Contraseña</label>
-                                    <input type="password" id="pass" name="pass"  value="" class="form-control" />
+                                    <label for="pass">Password *</label>
+                                    <input type="password" id="pass" name="pass" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-default">Login</button>
-                                <button type="reset" class="btn">Limpiar</button>
-                                <a href="/iesdonana/bd/index.php" class="btn btn-warning" role="button">Cancelar</a>
                             </form>
                         </div>
                     </div>

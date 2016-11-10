@@ -3,6 +3,9 @@
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
+define("CTX_DEPART", 0);
+define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -285,29 +288,33 @@ function buscar_por_localidad_id(PDO $pdo, $localidad_id): array
  */
 function dibujar_tabla(array $result)
 { ?>
-    <table class="table">
-        <thead>
-            <th>Número</th>
-            <th>Nombre</th>
-            <th>Localidad</th>
-            <th>Operaciones</th>
-        </thead>
-        <tbody><?php
-            foreach ($result as $fila) {
-                $dept_no = htmlentities($fila['dept_no']); ?>
-                <tr>
-                    <td><?= $dept_no ?></td>
-                    <td><?= htmlentities($fila['dnombre']) ?></td>
-                    <td><?= htmlentities($fila['loc']) ?></td>
-                    <td>
-                        <a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
-                        <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
-                        <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
-                    </td>
-                </tr><?php
-            } ?>
-        </tbody>
-    </table><?php
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <table class="table">
+                <thead>
+                    <th>Número</th>
+                    <th>Nombre</th>
+                    <th>Localidad</th>
+                    <th>Operaciones</th>
+                </thead>
+                <tbody><?php
+                    foreach ($result as $fila) {
+                        $dept_no = htmlentities($fila['dept_no']); ?>
+                        <tr>
+                            <td><?= $dept_no ?></td>
+                            <td><?= htmlentities($fila['dnombre']) ?></td>
+                            <td><?= htmlentities($fila['loc']) ?></td>
+                            <td>
+                                <a href="borrar.php?dept_no=<?= $dept_no ?>" class="btn btn-danger btn-xs" role="button">Borrar</a>
+                                <a href="modificar.php?dept_no=<?= $dept_no ?>" class="btn btn-info btn-xs" role="button">Modificar</a>
+                                <a href="ver.php" class="btn btn-warning btn-xs" role="button">Ver</a>
+                            </td>
+                        </tr><?php
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div><?php
 }
 
 function dibujar_tabla_localidades(array $result)
@@ -355,4 +362,68 @@ function lista_localidades(array $localidades, $localidad_id = null)
             </option><?php
         } ?>
     </select><?php
+}
+
+function menu($contexto = null)
+{ ?>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/baseDatos/bd/">Menú principal</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li <?= ($contexto === CTX_DEPART) ? 'class="active"' : '' ?> >
+                        <a href="/baseDatos/bd/depart">Departamentos</a>
+                    </li>
+                    <li <?= ($contexto === CTX_LOCALIDADES) ? 'class="active"' : '' ?> >
+                        <a href="/baseDatos/bd/localidades">Localidades</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right"><?php
+                    if (isset($_COOKIE['login'])) { ?>
+                        <li>
+                            <p class="navbar-text"><?= $_COOKIE['login'] ?></p>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="/baseDatos/bd/comunes/logout.php">Logout</a>
+                        </li><?php
+                    } else { ?>
+                        <li <?= ($contexto === CTX_LOGIN) ? 'class="active"' : '' ?> >
+                            <a href="/baseDatos/bd/comunes/login.php">Login</a>
+                        </li><?php
+                    } ?>
+                </ul>
+            </div>
+        </div>
+    </nav><?php
+}
+
+function comprobar_credenciales(PDO $pdo, $login, $pass, array &$error)
+{
+    $orden = $pdo->prepare("select * from usuarios where nombre = :login");
+    $orden->execute([':login' => $login]);
+    $result = $orden->fetch();
+    if (empty($result) || !password_verify($pass, $result['pass'])) {
+        $error[] = "Credenciales incorrectas";
+    }
+}
+
+function comprobar_logueado()
+{
+    if (!usuario_logueado()) {
+        header("Location: /baseDatos/bd/comunes/login.php");
+    }
+}
+
+function usuario_logueado(): bool
+{
+    return isset($_COOKIE['login']);
 }
