@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -30,7 +31,7 @@
         $pdo = conectar_bd();
         comprobar_credenciales($pdo, $login, $pass, $error);
         comprobar_errores($error);
-        setcookie('login', $login, 0, '/');
+        $_SESSION['login'] = $login;
         header("Location: /bd/");
     } catch (Exception $e) {
         mostrar_errores($error);

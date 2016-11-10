@@ -423,10 +423,10 @@ function menu($contexto = null)
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right"><?php
-                if (isset($_COOKIE['login'])) { ?>
+                if (isset($_SESSION['login'])) { ?>
                     <li>
                         <p class="navbar-text">
-                            <?= $_COOKIE['login'] ?>
+                            <?= htmlentities($_SESSION['login']) ?>
                         </p>
                     </li>
                     <li>
@@ -463,5 +463,5 @@ function comprobar_logueado()
 
 function usuario_logueado(): bool
 {
-    return isset($_COOKIE['login']);
+    return isset($_SESSION['login']);
 }

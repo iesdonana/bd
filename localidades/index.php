@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,7 +32,7 @@
                                         <form action="" method="get">
                                             <div class="form-group">
                                                 <label for="loc">Localidad</label>
-                                                <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" /><br/>
+                                                <input type="text" id="loc" name="loc" value="<?= htmlentities($loc) ?>" class="form-control"/><br/>
                                             </div>
                                             <button type="submit" class="btn btn-default">Buscar</button>
                                             <button type="reset" class="btn">Limpiar</button>
