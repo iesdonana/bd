@@ -13,7 +13,7 @@
         require "auxiliar.php";
 
         if (usuario_logueado()) {
-            header("Location: /bd/");
+            header("Location: /baseDatos/bd/");
         }
 
         menu(CTX_LOGIN);
@@ -30,7 +30,7 @@
             comprobar_credenciales($pdo, $login, $pass, $error);
             comprobar_errores($error);
             $_SESSION['login'] = $login;
-            header("Location: /bd/");
+            header("Location: /baseDatos/bd/");
         } catch (Exception $e) {
             mostrar_errores($error);
         } ?>

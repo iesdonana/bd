@@ -375,15 +375,15 @@ function menu($contexto = null)
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/bd/">Menú principal</a>
+                <a class="navbar-brand" href="/baseDatos/bd/">Menú principal</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li <?= ($contexto === CTX_DEPART) ? 'class="active"' : '' ?> >
-                        <a href="/bd/depart">Departamentos</a>
+                        <a href="/baseDatos/bd/depart">Departamentos</a>
                     </li>
                     <li <?= ($contexto === CTX_LOCALIDADES) ? 'class="active"' : '' ?> >
-                        <a href="/bd/localidades">Localidades</a>
+                        <a href="/baseDatos/bd/localidades">Localidades</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right"><?php
@@ -393,11 +393,11 @@ function menu($contexto = null)
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a href="/bd/comunes/logout.php">Logout</a>
+                            <a href="/baseDatos/bd/comunes/logout.php">Logout</a>
                         </li><?php
                     } else { ?>
                         <li <?= ($contexto === CTX_LOGIN) ? 'class="active"' : '' ?> >
-                            <a href="/bd/comunes/login.php">Login</a>
+                            <a href="/baseDatos/bd/comunes/login.php">Login</a>
                         </li><?php
                     } ?>
                 </ul>
@@ -419,7 +419,7 @@ function comprobar_credenciales(PDO $pdo, $login, $pass, array &$error)
 function comprobar_logueado()
 {
     if (!usuario_logueado()) {
-        header("Location: /bd/comunes/login.php");
+        header("Location: /baseDatos/bd/comunes/login.php");
         return false;
     }
     return true;
