@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,47 +8,48 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <style type="text/css">
-            body { padding: 60px; }
-        </style>
     </head>
     <body><?php
-        require "auxiliar.php";
+        require "../comunes/auxiliar.php";
+
+        comprobar_logueado();
+        menu(CTX_DEPART);
+
+        $pdo = conectar_bd();
+        $localidades = obtener_localidades($pdo);
 
         $dept_no = filter_input(INPUT_GET, "dept_no");
 
         if ($dept_no !== null) {
-            $pdo = conectar_bd();
             $result = buscar_por_dept_no($pdo, $dept_no);
             if (empty($result)) {
                 header("Location: index.php");
             }
             $result  = $result[0];
             $dnombre = $result['dnombre'];
-            $loc     = $result['loc'];
+            $localidad_id = $result['localidad_id'];
         } else {
             $dept_no_viejo = filter_input(INPUT_POST, "dept_no_viejo");
-            $dept_no = filter_input(INPUT_POST, "dept_no");
-            $dnombre = filter_input(INPUT_POST, "dnombre");
-            $loc     = filter_input(INPUT_POST, "loc");
+            $dept_no       = filter_input(INPUT_POST, "dept_no");
+            $dnombre       = filter_input(INPUT_POST, "dnombre");
+            $localidad_id  = filter_input(INPUT_POST, "localidad_id");
 
             try {
                 $error = [];
-                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $loc]);
+                comprobar_existen([$dept_no_viejo, $dept_no, $dnombre, $localidad_id]);
                 comprobar_dept_no($dept_no, $error, ESC_MODIFICAR, $dept_no_viejo);
                 comprobar_dnombre($dnombre, $error, ESC_INSERTAR);
-                comprobar_loc($loc, $error);
+                comprobar_localidad_id($localidad_id, $pdo, $error);
                 comprobar_errores($error);
-                $pdo = conectar_bd();
                 $orden = $pdo->prepare("update depart
-                                           set dept_no = :dept_no,
-                                               dnombre = :dnombre,
-                                               loc     = :loc
+                                           set dept_no      = :dept_no,
+                                               dnombre      = :dnombre,
+                                               localidad_id = :localidad_id
                                          where dept_no = :dept_no_viejo");
                 $orden->execute([
                     ':dept_no'       => $dept_no,
                     ':dnombre'       => $dnombre,
-                    ':loc'           => $loc,
+                    ':localidad_id'  => $localidad_id,
                     ':dept_no_viejo' => $dept_no_viejo
                 ]);
                 header("Location: index.php");
@@ -76,7 +78,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="loc">Localidad</label>
-                                    <input type="text" id="loc" name="loc"  value="<?= htmlentities($loc) ?>" class="form-control" />
+                                    <?php lista_localidades($localidades, $localidad_id) ?>
                                 </div>
                                 <button type="submit" class="btn btn-default">Modificar</button>
                                 <button type="reset" class="btn">Limpiar</button>

@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,7 +13,7 @@
         require "auxiliar.php";
 
         if (usuario_logueado()) {
-            header("Location: /baseDatos/bd/");
+            header("Location: /bd/");
         }
 
         menu(CTX_LOGIN);
@@ -28,8 +29,8 @@
             $pdo = conectar_bd();
             comprobar_credenciales($pdo, $login, $pass, $error);
             comprobar_errores($error);
-            setcookie('login', $login, 0, '/');
-            header("Location: /baseDatos/bd/");
+            $_SESSION['login'] = $login;
+            header("Location: /bd/");
         } catch (Exception $e) {
             mostrar_errores($error);
         } ?>
