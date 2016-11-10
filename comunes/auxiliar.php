@@ -425,9 +425,15 @@ function menu($contexto = null)
           <ul class="nav navbar-nav navbar-right"><?php
                 if (isset($_SESSION['login'])) { ?>
                     <li>
-                        <p class="navbar-text">
-                            <?= htmlentities($_SESSION['login']) ?>
-                        </p>
+
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                              <?= htmlentities($_SESSION['login']) ?> <span class="caret"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/bd/comunes/cambia_pass.php">Cambiar contraseña</a></li>
+                          </ul>
+                        </li>
                     </li>
                     <li>
                         <a href="/bd/comunes/logout.php">Logout</a>
@@ -442,6 +448,33 @@ function menu($contexto = null)
         </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav><?php
+}
+
+function comprobar_password(PDO $pdo, $pass, &$error)
+{
+    if (!password_verify($pass, $_SESSION['pass'])) {
+        $error[] = "La contraseña antigua no coincide.";
+    }
+}
+
+function cambiar_password(PDO $pdo, $pass_nueva)
+{
+
+    $orden = $pdo->prepare("update usuarios
+                            set pass = :pass
+                            where nombre = :login");
+    $orden->execute([':pass' => password_hash($pass_nueva, PASSWORD_DEFAULT),
+                    ':login' => $_SESSION['login']]);
+
+}
+
+function comprobar_password_nuevas($pass_nueva, $pass_nueva2, &$error)
+{
+    if ($pass_nueva == '' && $pass_nueva2 == ''){
+        $error[] = "Las contraseñas nuevas no puede ser vacía";
+    } else if ($pass_nueva !== $pass_nueva2) {
+        $error[] = "Las contraseñas nuevas no coinciden";
+    }
 }
 
 function comprobar_credenciales(PDO $pdo, $login, $pass, &$error)

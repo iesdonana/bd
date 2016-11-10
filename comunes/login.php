@@ -32,6 +32,7 @@
         comprobar_credenciales($pdo, $login, $pass, $error);
         comprobar_errores($error);
         $_SESSION['login'] = $login;
+        $_SESSION['pass'] = password_hash($pass, PASSWORD_DEFAULT);
         header("Location: /bd/");
     } catch (Exception $e) {
         mostrar_errores($error);
