@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -28,7 +29,8 @@
             $pdo = conectar_bd();
             comprobar_credenciales($pdo, $user, $pass, $error);
             comprobar_errores($error);
-            setcookie('login', $user, 0, '/');
+            //setcookie('login', $user, 0, '/');
+            $_SESSION['login'] = $user;
             header("Location: /iesdonana/bd/");
         } catch (Exception $e) {
             mostrar_errores($error);

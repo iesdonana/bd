@@ -324,8 +324,8 @@ function menu($contexto = null)
           </ul>
           <ul class="nav navbar-nav navbar-right">
               <?php
-                  if (isset($_COOKIE['login'])) { ?>
-                      <p class="navbar-text"><?= $_COOKIE['login'] ?></p>
+                  if (isset($_SESSION['login'])) { ?>
+                      <p class="navbar-text"><?= htmlentities($_SESSION['login']); ?></p>
                       <li>
                           <a href="/iesdonana/bd/comunes/logout.php">Logout</a>
                       </li> <?php
@@ -361,5 +361,5 @@ function comprobar_logueado()
 
 function usuario_logueado(): bool
 {
-    return isset($_COOKIE['login']);
+    return isset($_SESSION['login']);
 }
