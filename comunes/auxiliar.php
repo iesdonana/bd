@@ -401,6 +401,11 @@ function menu($contexto = null)
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
+                                    <a href="/bd/comunes/cambiar_nombre.php">
+                                        Cambiar nombre
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="/bd/comunes/cambiar_password.php">
                                         Cambiar contraseña
                                     </a>
@@ -464,5 +469,25 @@ function comprobar_nueva($nueva, $nueva_confirm, array &$error)
         $error[] = "La contraseña no puede ser vacía";
     } elseif ($nueva !== $nueva_confirm) {
         $error[] = "Las contraseñas no coinciden";
+    }
+}
+
+function comprobar_nombre_usuario(PDO $pdo, &$nombre, $id, array &$error)
+{
+    $nombre = trim($nombre);
+
+    if ($nombre === "") {
+        $error[] = "El nombre no puede ser vacío";
+    } elseif (mb_strlen($nombre) > 20) {
+        $error[] = "El nombre no puede tener más de 20 caracteres";
+    } else {
+        $orden = $pdo->prepare("select count(*)
+                                  from usuarios
+                                 where nombre = :nombre and
+                                       id != :id");
+        $orden->execute([':nombre' => $nombre, ':id' => $id]);
+        if ($orden->fetchColumn() > 0) {
+            $error[] = "El nombre ya está en uso";
+        }
     }
 }

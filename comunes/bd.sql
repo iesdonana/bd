@@ -42,4 +42,5 @@ create table usuarios (
 );
 
 insert into usuarios (nombre, pass)
-    values ('pepe', crypt('pepe', gen_salt('bf', 10)));
+    values ('pepe', crypt('pepe', gen_salt('bf', 10))),
+           ('juan', crypt('juan', gen_salt('bf', 10)));
