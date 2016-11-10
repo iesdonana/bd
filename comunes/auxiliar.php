@@ -374,8 +374,8 @@ function menu($contexto = null)
         <li><a href="/bd/depart">Departamentos</a></li>
         <li><a href="/bd/localidades">Localidades</a></li>
     </ul><?php
-        if (isset($_COOKIE['login'])) { ?>
-            <p><?= $_COOKIE['login'] ?></p>
+        if (isset($_SESSION['login'])) { ?>
+            <p><?= htmlentities($_SESSION['login']) ?></p>
             <a href="/bd/comunes/logout.php">Logout</a><?php
         } else { ?>
             <a href="/bd/comunes/login.php">Login</a><?php
@@ -403,5 +403,5 @@ function comprobar_logueado()
 
 function usuario_logueado(): bool
 {
-    return isset($_COOKIE['login']);
+    return isset($_SESSION['login']);
 }

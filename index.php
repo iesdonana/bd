@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,9 +7,7 @@
     </head>
     <body><?php
         require "comunes/auxiliar.php";
-        
-        menu();
-     ?>
+        menu();?>
         <h2>Bienvenido</h2>
     </body>
 </html>
