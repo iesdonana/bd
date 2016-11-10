@@ -389,7 +389,12 @@ function menu($contexto = null)
                 <ul class="nav navbar-nav navbar-right"><?php
                     if (isset($_SESSION['login'])) { ?>
                         <li>
-                            <p class="navbar-text"><?= htmlentities($_SESSION['login']) ?></p>
+                            <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?= htmlentities($_SESSION['login']) ?><span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/baseDatos/bd/comunes/cambiarPass.php">Cambiar contraseña</a></li>
+                            </ul>
+                        </li>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
