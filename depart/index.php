@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -11,7 +12,10 @@
     <body><?php
         require '../comunes/auxiliar.php';
 
-        comprobar_logueado();
+        if (!comprobar_logueado()) {
+            return;
+        }
+
         menu(CTX_DEPART);
 
         $pdo = conectar_bd();

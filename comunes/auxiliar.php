@@ -387,9 +387,9 @@ function menu($contexto = null)
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right"><?php
-                    if (isset($_COOKIE['login'])) { ?>
+                    if (isset($_SESSION['login'])) { ?>
                         <li>
-                            <p class="navbar-text"><?= $_COOKIE['login'] ?></p>
+                            <p class="navbar-text"><?= htmlentities($_SESSION['login']) ?></p>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
@@ -420,10 +420,12 @@ function comprobar_logueado()
 {
     if (!usuario_logueado()) {
         header("Location: /bd/comunes/login.php");
+        return false;
     }
+    return true;
 }
 
 function usuario_logueado(): bool
 {
-    return isset($_COOKIE['login']);
+    return isset($_SESSION['login']);
 }
