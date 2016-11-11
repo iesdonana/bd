@@ -24,7 +24,7 @@
                     foreach ($orden->fetchAll() as $fila) {
                         $id = $fila['id'];
                         $ruta = RUTA_IMG . "$id.jpg";?>
-                        <div style="float:left; margin-right:5px">
+                        <div style="float:left; margin: 0 5px 5px 0 ">
                             <a href="/bd/fichas/ver.php?id=<?= $id ?>">
                                 <img src="<?= $ruta ?>"
                                     width="160" height="250"
