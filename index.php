@@ -12,7 +12,30 @@
     </head>
     <body><?php
         require "comunes/auxiliar.php";
-        menu();?>
+        menu();
+        $pdo = conectar_bd();
+        $orden = $pdo-> prepare("select * from fichas");
+        $orden->execute();?>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-1 col-md-8">
+                    <h2>Próximos estrenos</h2><?php
+                    foreach ($orden->fetchAll() as $fila) {
+                        $id = $fila['id'];
+                        $ruta = RUTA_IMG . "$id.jpg";?>
+                        <div style="float:left; margin-right:5px">
+                            <a href="/bd/fichas/ver.php?id=<?= $id ?>">
+                                <img src="<?= $ruta ?>"
+                                    width="160" height="250"
+                                    title="<?= $fila['titulo'] ?>"/>
+                            </a>
+                        </div><?php
+                    }?>
+
+                </div>
+            </div>
+        </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
