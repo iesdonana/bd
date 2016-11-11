@@ -3,32 +3,38 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Menú principal</title>
+        <title>Ver ficha</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
     <body><?php
-        require "comunes/auxiliar.php";
+        require "../comunes/auxiliar.php";
         menu();
+
+        $id = filter_input(INPUT_GET,"id");
+
+        if ($id === null) {
+            header("Location: /bd/");
+        }
+
         $pdo = conectar_bd();
-        $orden = $pdo->prepare("select * from fichas");
-        $orden->execute(); ?>
+        $orden = $pdo->prepare("select * from fichas where id = :id");
+        $orden->execute([':id' => $id]);
+        $result = $orden->fetch();
+        $titulo = $result['titulo'];
+        $ruta = RUTA_IMG . "$id.jpg"; ?>
 
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-1 col-md-11">
-                    <h2>Próximos estrenos</h2><?php
-                    foreach ($orden->fetchAll() as $fila) {
-                        $id = $fila['id'];
-                        $ruta = RUTA_IMG . "$id.jpg"; ?>
-                        <div style="float: left; margin: 0 5px 5px 0">
-                                <a href="/bd/fichas/ver.php?id=<?= $id ?>">
-                                    <img src="<?= $ruta ?>" width="160" height="250" title="<?= $fila['titulo'] ?>"/>
-                                </a>
-                        </div> <?php
-                    } ?>
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><h4><?= htmlentities($titulo) ?></h4></div>
+                        <div class="panel-body">
+                            <img class="thumbnail" src="<?= $ruta ?>" width="160" height="250" title="<?= htmlentities($titulo) ?>"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
