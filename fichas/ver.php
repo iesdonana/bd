@@ -11,28 +11,35 @@
 
     </head>
     <body><?php
-        require "comunes/auxiliar.php";
+        require "../comunes/auxiliar.php";
         menu();
         $pdo = conectar_bd();
-        $orden = $pdo-> prepare("select * from fichas");
-        $orden->execute();?>
+        $id = filter_input(INPUT_GET, "id");
+
+        if ($id === null) {
+            header("Location: index.php");
+        }
+
+        $id = trim($id);
+
+        $orden = $pdo-> prepare("select * from fichas where id = :id");
+        $orden->execute([':id' => $id]);
+        $result = $orden->fetch();
+        $titulo = $result['titulo'];
+        $ruta = RUTA_IMG . "$id.jpg";?>
 
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-1 col-md-8">
-                    <h2>Próximos estrenos</h2><?php
-                    foreach ($orden->fetchAll() as $fila) {
-                        $id = $fila['id'];
-                        $ruta = RUTA_IMG . "$id.jpg";?>
-                        <div style="float:left; margin: 0 5px 5px 0 ">
-                            <a href="/bd/fichas/ver.php?id=<?= $id ?>" class="thumbnail">
-                                <img src="<?= $ruta ?>"
-                                    width="160" height="250"
-                                    title="<?= $fila['titulo'] ?>"/>
-                            </a>
-                        </div><?php
-                    }?>
+                <div class="col-md-offset-1 col-md-9">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Ficha</div>
+                        <div class="panel-body">
+                            <h2><?= htmlentities($titulo) ?> </h2>
+                            <img src="<?= $ruta ?>" alt="" class="thumbnail"/>
 
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
