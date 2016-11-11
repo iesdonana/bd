@@ -9,36 +9,40 @@
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
-    <body><?php
+    <body>
+        <?php
         require "auxiliar.php";
 
         if (!usuario_logueado()) {
             header("Location: /bd/");
         }
 
-        menu(CTX_LOGIN);
+        menu(CTX_CAMBIA_PASSWORD); ?>
 
-        $pass_vieja = filter_input(INPUT_POST, "pass_a");
-        $pass  = filter_input(INPUT_POST, "pass");
-        $pass_confirmar = filter_input(INPUT_POST, "pass_c");
+        <div class="container"><?php
+            $vieja         = filter_input(INPUT_POST, "vieja");
+            $nueva         = filter_input(INPUT_POST, "nueva");
+            $nueva_confirm = filter_input(INPUT_POST, "nueva_confirm");
 
-        try {
-            $error = [];
-            comprobar_existen([$pass_vieja, $pass, $pass_confirmar]);
-            $pass_vieja = trim($pass_vieja);
-            $pass_confirmar = trim($pass_confirmar);
-            $pass = trim($pass);
-            $pdo = conectar_bd();
-            comprobar_credenciales($pdo, $_SESSION['login'], $pass_vieja, $error);
-            comprobar_errores($error);
-            modificar_password($pdo, $_SESSION['login'], $pass, $pass_confirmar, $error);
-            comprobar_errores($error);
-            header("Location: /bd/");
-        } catch (Exception $e) {
-            mostrar_errores($error);
-        } ?>
+            try {
+                $error = [];
+                comprobar_existen([$vieja, $nueva, $nueva_confirm]);
+                $pdo = conectar_bd();
+                comprobar_vieja($pdo, $vieja, $error);
+                comprobar_nueva($nueva, $nueva_confirm, $error);
+                comprobar_errores($error);
+                $orden = $pdo->prepare("update usuarios
+                                           set pass = :nueva
+                                         where nombre = :login");
+                $orden->execute([
+                    ':login' => $_SESSION['login'],
+                    ':nueva' => password_hash($nueva, PASSWORD_DEFAULT)
+                ]);
+                header("Location: /bd/");
+            } catch (Exception $e) {
+                mostrar_errores($error);
+            } ?>
 
-        <div class="container">
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="panel panel-info">
@@ -46,18 +50,18 @@
                         <div class="panel-body">
                             <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="login">Contraseña actual *</label>
-                                    <input type="password" id="pass_a" name="pass_a" class="form-control" />
+                                    <label for="vieja">Contraseña anterior *</label>
+                                    <input type="password" id="vieja" name="vieja" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass">Contraseña nueva *</label>
-                                    <input type="password" id="pass" name="pass" class="form-control" />
+                                    <label for="nueva">Nueva contraseña *</label>
+                                    <input type="password" id="nueva" name="nueva" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass">Confirma contraseña nueva *</label>
-                                    <input type="password" id="pass_c" name="pass_c" class="form-control" />
+                                    <label for="nueva_confirm">Confirmar nueva contraseña *</label>
+                                    <input type="password" id="nueva_confirm" name="nueva_confirm" class="form-control" />
                                 </div>
-                                <button type="submit" class="btn btn-default">Confirmar</button>
+                                <button type="submit" class="btn btn-default">Aceptar</button>
                                 <a href="/bd/" class="btn btn-warning" role="button">Cancelar</a>
                             </form>
                         </div>

@@ -9,33 +9,40 @@
         <!-- Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     </head>
-    <body><?php
+    <body>
+        <?php
         require "auxiliar.php";
 
         if (!usuario_logueado()) {
             header("Location: /bd/");
         }
 
-        menu(CTX_LOGIN);
+        menu(CTX_CAMBIA_PASSWORD); ?>
 
-        $login_c = filter_input(INPUT_POST, "login");
-        $pass  = filter_input(INPUT_POST, "pass");
+        <div class="container"><?php
+            $nombre = filter_input(INPUT_POST, "nombre");
 
-        try {
-            $error = [];
-            comprobar_existen([$login, $pass]);
-            $login = trim($login);
-            $pass = trim($pass);
-            $pdo = conectar_bd();
-            comprobar_credenciales($pdo, $login, $pass, $error);
-            comprobar_errores($error);
-            $_SESSION['login'] = $login;
-            header("Location: /bd/");
-        } catch (Exception $e) {
-            mostrar_errores($error);
-        } ?>
+            try {
+                $error = [];
+                comprobar_existen([$nombre]);
+                $pdo = conectar_bd();
+                $orden = $pdo->prepare("select id
+                                          from usuarios
+                                         where nombre = :nombre");
+                $orden->execute([':nombre' => $_SESSION['login']]);
+                $id = $orden->fetchColumn();
+                comprobar_nombre_usuario($pdo, $nombre, $id, $error);
+                comprobar_errores($error);
+                $orden = $pdo->prepare("update usuarios
+                                           set nombre = :nombre
+                                         where id = :id");
+                $orden->execute([':nombre' => $nombre, ':id' => $id]);
+                $_SESSION['login'] = $nombre;
+                header("Location: /bd/");
+            } catch (Exception $e) {
+                mostrar_errores($error);
+            } ?>
 
-        <div class="container">
             <div class="row">
                 <div class="col-md-offset-4 col-md-4">
                     <div class="panel panel-info">
@@ -43,14 +50,10 @@
                         <div class="panel-body">
                             <form action="" method="post">
                                 <div class="form-group">
-                                    <label for="pass">Contraseña actual *</label>
-                                    <input type="text" id="pass" name="pass" class="form-control" />
+                                    <label for="nombre">Nuevo nombre *</label>
+                                    <input type="text" id="nombre" name="nombre" class="form-control" />
                                 </div>
-                                <div class="form-group">
-                                    <label for="pass">Nuevo nombre de usuario *</label>
-                                    <input type="password" id="pass" name="pass" value="<?= htmlentities($login_c) ?>"class="form-control" />
-                                </div>
-                                <button type="submit" class="btn btn-default">Confirmar</button>
+                                <button type="submit" class="btn btn-default">Aceptar</button>
                                 <a href="/bd/" class="btn btn-warning" role="button">Cancelar</a>
                             </form>
                         </div>

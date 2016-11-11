@@ -6,6 +6,9 @@ define("ESC_MODIFICAR", 2);
 define("CTX_DEPART", 0);
 define("CTX_LOCALIDADES", 1);
 define("CTX_LOGIN", 2);
+define("CTX_CAMBIA_PASSWORD", 3);
+define("RUTA_ASSETS", "/bd/assets/");
+define("RUTA_IMG", RUTA_ASSETS . "img/");
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -388,8 +391,28 @@ function menu($contexto = null)
                 </ul>
                 <ul class="nav navbar-nav navbar-right"><?php
                     if (isset($_SESSION['login'])) { ?>
-                        <li>
-                            <p class="navbar-text"><?= htmlentities($_SESSION['login']) ?></p>
+                        <li class="dropdown<?= ($contexto === CTX_CAMBIA_PASSWORD) ? ' active' : '' ?>">
+                            <a href="#"
+                               class="dropdown-toggle"
+                               data-toggle="dropdown"
+                               role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                <?= htmlentities($_SESSION['login']) ?>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/bd/comunes/cambiar_nombre.php">
+                                        Cambiar nombre
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/bd/comunes/cambiar_password.php">
+                                        Cambiar contraseña
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
@@ -428,4 +451,45 @@ function comprobar_logueado()
 function usuario_logueado(): bool
 {
     return isset($_SESSION['login']);
+}
+
+function comprobar_vieja(PDO $pdo, $vieja, array &$error)
+{
+    $orden = $pdo->prepare("select pass
+                              from usuarios
+                             where nombre = :login");
+    $orden->execute([':login' => $_SESSION['login']]);
+    $pass = $orden->fetchColumn();
+    if (!password_verify($vieja, $pass)) {
+        $error[] = "La contraseña anterior es incorrecta";
+    }
+}
+
+function comprobar_nueva($nueva, $nueva_confirm, array &$error)
+{
+    if ($nueva === "") {
+        $error[] = "La contraseña no puede ser vacía";
+    } elseif ($nueva !== $nueva_confirm) {
+        $error[] = "Las contraseñas no coinciden";
+    }
+}
+
+function comprobar_nombre_usuario(PDO $pdo, &$nombre, $id, array &$error)
+{
+    $nombre = trim($nombre);
+
+    if ($nombre === "") {
+        $error[] = "El nombre no puede ser vacío";
+    } elseif (mb_strlen($nombre) > 20) {
+        $error[] = "El nombre no puede tener más de 20 caracteres";
+    } else {
+        $orden = $pdo->prepare("select count(*)
+                                  from usuarios
+                                 where nombre = :nombre and
+                                       id != :id");
+        $orden->execute([':nombre' => $nombre, ':id' => $id]);
+        if ($orden->fetchColumn() > 0) {
+            $error[] = "El nombre ya está en uso";
+        }
+    }
 }

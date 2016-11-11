@@ -42,4 +42,20 @@ create table usuarios (
 );
 
 insert into usuarios (nombre, pass)
-    values ('pepe', crypt('pepe', gen_salt('bf', 10)));
+    values ('pepe', crypt('pepe', gen_salt('bf', 10))),
+           ('juan', crypt('juan', gen_salt('bf', 10)));
+
+drop table if exists fichas cascade;
+
+create table fichas (
+    id     bigserial    constraint pk_fichas primary key,
+    titulo varchar(255) not null
+);
+
+insert into fichas (titulo)
+    values ('La bala que dobló la esquina'),
+           ('Dos pistolas para un manco'),
+           ('Ikuku y la botella'),
+           ('Vente a Alemania Pepe'),
+           ('Los bingueros'),
+           ('La muerte de los inmortales');
