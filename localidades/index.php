@@ -15,7 +15,7 @@
 
         comprobar_logueado();
 
-        menu("localidades");
+        menu(CTX_LOCALIDADES);
 
         $pdo = conectar_bd();
 

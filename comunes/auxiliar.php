@@ -3,6 +3,10 @@
 define("ESC_CONSULTA", 0);
 define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
+define("CTX_DEPART", 0);
+define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
+define("CTX_USUARIO", 3);
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -319,13 +323,13 @@ function menu($contexto = null)
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class=<?= ($contexto === "depart") ? "active" : "" ?>><a href="/iesdonana/bd/depart">Departamentos</a></li>
-            <li class=<?= ($contexto === "localidades") ? "active" : "" ?>><a href="/iesdonana/bd/localidades">Localidades</a></li>
+            <li class=<?= ($contexto === CTX_DEPART) ? "active" : "" ?>><a href="/iesdonana/bd/depart">Departamentos</a></li>
+            <li class=<?= ($contexto === CTX_LOCALIDADES) ? "active" : "" ?>><a href="/iesdonana/bd/localidades">Localidades</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
               <?php
                   if (isset($_SESSION['login'])) { ?>
-                      <li class="dropdown <?= ($contexto === "user") ? "active" : "" ?>">
+                      <li class="dropdown <?= ($contexto === CTX_USUARIO) ? "active" : "" ?>">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                              role="button" aria-haspopup="true" aria-expanded="false">
                                 <?= htmlentities($_SESSION['login']); ?>
@@ -340,7 +344,7 @@ function menu($contexto = null)
                           <a href="/iesdonana/bd/comunes/logout.php">Logout</a>
                       </li> <?php
                   } else { ?>
-                      <li class=<?= ($contexto === "login") ? "active" : "" ?>>
+                      <li class=<?= ($contexto === CTX_LOGIN) ? "active" : "" ?>>
                           <a href="/iesdonana/bd/comunes/login.php">Login</a>
                       </li> <?php
                   } ?>

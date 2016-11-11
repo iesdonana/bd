@@ -15,7 +15,7 @@
 
         comprobar_logueado();
 
-        menu("localidades");
+        menu(CTX_LOCALIDADES);
 
         $localidad_id = filter_input(INPUT_POST, "localidad_id");
 

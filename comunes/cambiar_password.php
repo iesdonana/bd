@@ -15,7 +15,7 @@
         if (!usuario_logueado()) {
             header("Location: /bd/");
         }
-        menu(CTX_CAMBIA_PASSWORD); ?>
+        menu(CTX_USUARIO); ?>
 
         <div class="container"><?php
             $vieja         = filter_input(INPUT_POST, "vieja");

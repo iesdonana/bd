@@ -16,7 +16,7 @@
             header("Location: /iesdonana/bd/");
         }
 
-        menu("login");
+        menu(CTX_LOGIN);
 
         $user = filter_input(INPUT_POST, "user");
         $pass = filter_input(INPUT_POST, "pass");

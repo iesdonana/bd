@@ -15,7 +15,7 @@
 
         comprobar_logueado();
 
-        menu("depart");
+        menu(CTX_DEPART);
 
         $dept_no = filter_input(INPUT_POST, "dept_no");
 
