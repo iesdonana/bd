@@ -13,7 +13,7 @@
         <?php
         require "auxiliar.php";
         if (!usuario_logueado()) {
-            header("Location: /bd/");
+            header("Location: /iesdonana/bd/");
         }
         menu(CTX_USUARIO); ?>
 
@@ -35,7 +35,7 @@
                                          where id = :id");
                 $orden->execute([':nombre' => $nombre, ':id' => $id]);
                 $_SESSION['login'] = $nombre;
-                header("Location: /bd/");
+                header("Location: /iesdonana/bd/");
             } catch (Exception $e) {
                 mostrar_errores($error);
             } ?>
