@@ -7,6 +7,8 @@ define("CTX_DEPART", 0);
 define("CTX_LOCALIDADES", 1);
 define("CTX_LOGIN", 2);
 define("CTX_CAMBIA_PASSWORD", 3);
+define("RUTA_ASSETS", "/bd/assets/");
+define("RUTA_IMG", RUTA_ASSETS . "img/");
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
