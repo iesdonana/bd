@@ -18,15 +18,23 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-md-offset-1 col-md-8"> <?php
+                <div class="col-md-offset-1 col-md-11">
+                    <h2>Próximos estrenos</h2> <?php
                     foreach ($orden->fetchAll() as $fila) {
                         $id = $fila['id'];
                         $ruta =  RUTA_IMG . "$id.jpg"; ?>
-                        <div style="float:left; margin-right: 5px;">
+                        <div style="float:left; margin: 5px;">
                             <p>
-                                <a href="/bd/fichas/ver.php?id= <?= $id ?>">
-                                    <img src="<?= $ruta ?>" width="160" height="250" />
-                                </a>
+                                <div class="thumbnail">
+                                    <a href="/iesdonana/bd/fichas/ver.php?id=<?= $id ?>">
+                                        <img src="<?= $ruta ?>" width="160" height="250" style="display: block;" />
+                                    </a>
+                                    <div class="caption">
+                                        <a href="/iesdonana/bd/fichas/ver.php?id=<?= $id ?>">
+                                            <p><?= $fila['titulo'] ?></p>
+                                        </a>
+                                    </div>
+                                </div>
                             </p>
                         </div> <?php
                     } ?>
