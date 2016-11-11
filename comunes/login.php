@@ -44,11 +44,11 @@
                         <div class="panel-body">
                             <form action="" method="post"> <!-- El action vacio indica que el submit enviara el formulario a si mismo -->
                                 <div class="form-group">
-                                    <label for="user">Usuario</label>
+                                    <label for="user">Usuario *</label>
                                     <input type="text" id="user" name="user" value="<?= htmlentities($user) ?>" class="form-control" />
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass">Contraseña</label>
+                                    <label for="pass">Contraseña *</label>
                                     <input type="password" id="pass" name="pass"  value="" class="form-control" />
                                 </div>
                                 <button type="submit" class="btn btn-default">Login</button>
