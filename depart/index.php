@@ -1,3 +1,4 @@
+<?php session_start() ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +11,10 @@
     </head>
     <body><?php
         require '../comunes/auxiliar.php';
+
+        if (!comprobar_logueado()) {
+            return;
+        }
 
         menu(CTX_DEPART);
 
