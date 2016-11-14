@@ -5,6 +5,10 @@ define("ESC_INSERTAR", 1);
 define("ESC_MODIFICAR", 2);
 define("CTX_DEPART", 0);
 define("CTX_LOCALIDADES", 1);
+define("CTX_LOGIN", 2);
+define("CTX_CAMBIA_PASSWORD", 3);
+define("RUTA_ASSETS", "/bd/assets/");
+define("RUTA_IMG", RUTA_ASSETS . "img/");
 
 function exception_error_handler($severidad, $mensaje, $fichero, $línea) {
     if (!(error_reporting() & $severidad)) {
@@ -203,8 +207,8 @@ function conectar_bd(): PDO
 {
     return new PDO(
         'pgsql:host=localhost;dbname=prueba',
-        'ricardo',
-        'ricardo'
+        'ezekie',
+        'ezekie'
     );
 }
 
@@ -385,7 +389,107 @@ function menu($contexto = null)
                         <a href="/bd/localidades">Localidades</a>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right"><?php
+                    if (isset($_SESSION['login'])) { ?>
+                        <li class="dropdown<?= ($contexto === CTX_CAMBIA_PASSWORD) ? ' active' : '' ?>">
+                            <a href="#"
+                               class="dropdown-toggle"
+                               data-toggle="dropdown"
+                               role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">
+                                <?= htmlentities($_SESSION['login']) ?>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="/bd/comunes/cambiar_nombre.php">
+                                        Cambiar nombre
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/bd/comunes/cambiar_password.php">
+                                        Cambiar contraseña
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="/bd/comunes/logout.php">Logout</a>
+                        </li><?php
+                    } else { ?>
+                        <li <?= ($contexto === CTX_LOGIN) ? 'class="active"' : '' ?> >
+                            <a href="/bd/comunes/login.php">Login</a>
+                        </li><?php
+                    } ?>
+                </ul>
             </div>
         </div>
     </nav><?php
+}
+
+function comprobar_credenciales(PDO $pdo, $login, $pass, array &$error)
+{
+    $orden = $pdo->prepare("select * from usuarios where nombre = :login");
+    $orden->execute([':login' => $login]);
+    $result = $orden->fetch();
+    if (empty($result) || !password_verify($pass, $result['pass'])) {
+        $error[] = "Credenciales incorrectas";
+    }
+}
+
+function comprobar_logueado()
+{
+    if (!usuario_logueado()) {
+        header("Location: /bd/comunes/login.php");
+        return false;
+    }
+    return true;
+}
+
+function usuario_logueado(): bool
+{
+    return isset($_SESSION['login']);
+}
+
+function comprobar_vieja(PDO $pdo, $vieja, array &$error)
+{
+    $orden = $pdo->prepare("select pass
+                              from usuarios
+                             where nombre = :login");
+    $orden->execute([':login' => $_SESSION['login']]);
+    $pass = $orden->fetchColumn();
+    if (!password_verify($vieja, $pass)) {
+        $error[] = "La contraseña anterior es incorrecta";
+    }
+}
+
+function comprobar_nueva($nueva, $nueva_confirm, array &$error)
+{
+    if ($nueva === "") {
+        $error[] = "La contraseña no puede ser vacía";
+    } elseif ($nueva !== $nueva_confirm) {
+        $error[] = "Las contraseñas no coinciden";
+    }
+}
+
+function comprobar_nombre_usuario(PDO $pdo, &$nombre, $id, array &$error)
+{
+    $nombre = trim($nombre);
+
+    if ($nombre === "") {
+        $error[] = "El nombre no puede ser vacío";
+    } elseif (mb_strlen($nombre) > 20) {
+        $error[] = "El nombre no puede tener más de 20 caracteres";
+    } else {
+        $orden = $pdo->prepare("select count(*)
+                                  from usuarios
+                                 where nombre = :nombre and
+                                       id != :id");
+        $orden->execute([':nombre' => $nombre, ':id' => $id]);
+        if ($orden->fetchColumn() > 0) {
+            $error[] = "El nombre ya está en uso";
+        }
+    }
 }

@@ -32,3 +32,30 @@ drop view if exists depart_v cascade;
 create view depart_v as
     select *
     from depart d left join localidades l on d.localidad_id = l.id;
+
+drop table if exists usuarios cascade;
+
+create table usuarios (
+    id     bigserial    constraint pk_usuarios primary key,
+    nombre varchar(20)  not null constraint uq_usuarios_nombre unique,
+    pass   varchar(255) not null
+);
+
+insert into usuarios (nombre, pass)
+    values ('pepe', crypt('pepe', gen_salt('bf', 10))),
+           ('juan', crypt('juan', gen_salt('bf', 10)));
+
+drop table if exists fichas cascade;
+
+create table fichas (
+    id     bigserial    constraint pk_fichas primary key,
+    titulo varchar(255) not null
+);
+
+insert into fichas (titulo)
+    values ('La bala que dobló la esquina'),
+           ('Dos pistolas para un manco'),
+           ('Ikuku y la botella'),
+           ('Vente a Alemania Pepe'),
+           ('Los bingueros'),
+           ('La muerte de los inmortales');
